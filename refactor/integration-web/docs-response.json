@@ -1,0 +1,114 @@
+{
+    "data":  [
+                 {
+                     "id":  "c0b626fd-92b3-45ba-b948-47a8f64d917c",
+                     "tenant_id":  10001,
+                     "knowledge_base_id":  "0be789fa-86a2-4ff8-ab00-48e26191738a",
+                     "tags":  null,
+                     "type":  "file",
+                     "title":  "无人快递车接口接入文档V1.19.pdf",
+                     "description":  "本文规定国家邮政局与快递服务组织、无人快递车研发制造企业之间的信息交换要求，涵盖基础信息、运行动态、运营线路及安全事故数据的报送主体、频次和编码。接口采用HTTP POST、JSON及UTF-8，明确鉴权、国密加密签名和异常重试要求，并提供实时状态、OTA升级记录等接口示例及车辆状态、事故分类等代码表。",
+                     "source":  "",
+                     "channel":  "web",
+                     "parse_status":  "completed",
+                     "pending_subtasks_count":  0,
+                     "summary_status":  "completed",
+                     "profile":  {
+                                     "gist":  "规定无人快递车监管数据交换的接口、报送频次、鉴权加密及业务编码要求。",
+                                     "topics":  [
+                                                    "无人快递车",
+                                                    "数据交换频次",
+                                                    "访问权限控制",
+                                                    "数据安全控制",
+                                                    "事故等级代码"
+                                                ],
+                                     "doc_type":  "接口技术规范",
+                                     "typical_question":  "无人快递车向国家邮政局报送数据时，需要遵循哪些通信协议、推送频次、鉴权和加密签名要求？"
+                                 },
+                     "enable_status":  "enabled",
+                     "embedding_model_id":  "be4a5236-e924-4622-ba4e-04c2b3802a2e",
+                     "file_name":  "无人快递车接口接入文档V1.19.pdf",
+                     "folder_path":  "",
+                     "file_type":  "pdf",
+                     "file_size":  2483552,
+                     "file_hash":  "458108d52a9efe508b016271209a9be0",
+                     "file_path":  "resource://5bszXjCdhjVe8F9kH9aQzA",
+                     "storage_size":  5885485,
+                     "metadata":  {
+                                      "process_overrides":  {
+                                                                "asr_config":  {
+                                                                                   "enabled":  false,
+                                                                                   "language":  "",
+                                                                                   "model_id":  ""
+                                                                               },
+                                                                "vlm_config":  {
+                                                                                   "api_key":  "",
+                                                                                   "enabled":  false,
+                                                                                   "base_url":  "",
+                                                                                   "model_id":  "",
+                                                                                   "model_name":  "",
+                                                                                   "interface_type":  ""
+                                                                               },
+                                                                "graph_enabled":  false,
+                                                                "image_actions":  {
+                                                                                      "ocr":  {
+                                                                                                  "on":  [
+                                                                                                             {
+                                                                                                                 "is":  "block",
+                                                                                                                 "prop":  "contain.text"
+                                                                                                             },
+                                                                                                             {
+                                                                                                                 "is":  "true",
+                                                                                                                 "prop":  "contain.data_visual"
+                                                                                                             }
+                                                                                                         ],
+                                                                                                  "on_unobserved":  true
+                                                                                              }
+                                                                                  },
+                                                                "extract_config":  {
+                                                                                       "enabled":  false
+                                                                                   },
+                                                                "chunking_config":  {
+                                                                                        "strategy":  "auto",
+                                                                                        "chunk_size":  512,
+                                                                                        "separators":  [
+                                                                                                           "\n\n",
+                                                                                                           "\n",
+                                                                                                           "。",
+                                                                                                           "！",
+                                                                                                           "？",
+                                                                                                           ";",
+                                                                                                           "；"
+                                                                                                       ],
+                                                                                        "chunk_overlap":  80,
+                                                                                        "child_chunk_size":  384,
+                                                                                        "parent_chunk_size":  4096,
+                                                                                        "enable_parent_child":  true
+                                                                                    },
+                                                                "summary_enabled":  true,
+                                                                "enable_multimodel":  false,
+                                                                "image_attrs_enabled":  false,
+                                                                "image_vector_enabled":  false,
+                                                                "question_generation_config":  {
+                                                                                                   "enabled":  true,
+                                                                                                   "question_count":  3
+                                                                                               }
+                                                            }
+                                  },
+                     "custom_metadata":  {
+
+                                         },
+                     "last_faq_import_result":  null,
+                     "created_at":  "2026-10-29T17:57:30.55617+08:00",
+                     "updated_at":  "2026-10-29T18:06:30.343367+08:00",
+                     "processed_at":  "2026-10-29T18:06:30.343367+08:00",
+                     "error_message":  "",
+                     "deleted_at":  null,
+                     "knowledge_base_name":  ""
+                 }
+             ],
+    "page":  1,
+    "page_size":  50,
+    "success":  true,
+    "total":  1
+}

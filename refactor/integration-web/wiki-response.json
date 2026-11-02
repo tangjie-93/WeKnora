@@ -1,0 +1,272 @@
+{
+    "intro":  "# Wiki Index\n\n这是索引页面，新增内容将自动更新。当前收录无人快递车接口数据交换相关文档，涵盖通信方式、报送频次、数据规范、鉴权、安全、异常处理及主要业务报文定义。",
+    "version":  2,
+    "groups":  [
+                   {
+                       "type":  "summary",
+                       "total":  1,
+                       "items":  [
+                                     {
+                                         "slug":  "summary/c0b626fd-92b3-45ba-b948-47a8f64d917c",
+                                         "title":  "无人快递车接口接入文档V1.19.pdf - Summary",
+                                         "summary":  "本文规定[[entity/guojia-youzheng-ju|国家邮政局]]与企业开展[[concept/wuren-kuaidi-che-jiekou-shuju-jiaohuan|无人快递车接口数据交换]]的通信方式、报送频次、数据规范、鉴权、安全及异常处理要求，并提供主要业务报文定义。",
+                                         "wiki_path":  "summary/无人快递车接口接入文档V1.19.pdf - Summary"
+                                     }
+                                 ]
+                   },
+                   {
+                       "type":  "entity",
+                       "total":  3,
+                       "items":  [
+                                     {
+                                         "slug":  "entity/wuren-kuaidi-che",
+                                         "title":  "无人快递车",
+                                         "summary":  "无人快递车是用于邮政快递配送及运输的自动驾驶车辆，页面汇总其基础信息、运行监控、运输任务、线路及安全处置数据要求。",
+                                         "category_path":  [
+                                                               "交通工具"
+                                                           ],
+                                         "wiki_path":  "entity/交通工具/无人快递车",
+                                         "depth":  1
+                                     },
+                                     {
+                                         "slug":  "entity/wuren-kuaidi-che-jiekou-fuwu-jiaohuan-yaoqiu",
+                                         "title":  "无人快递车接口服务交换要求",
+                                         "summary":  "国家邮政局制定的无人快递车接口数据交换规范，涵盖基础信息、运行监控、运营区域、安全检查及事故报警等接口要求。",
+                                         "category_path":  [
+                                                               "标准规范"
+                                                           ],
+                                         "wiki_path":  "entity/标准规范/无人快递车接口服务交换要求",
+                                         "depth":  1
+                                     },
+                                     {
+                                         "slug":  "entity/kuaidi-fuwu-zuzhi",
+                                         "title":  "快递服务组织",
+                                         "summary":  "快递服务组织是在中国境内依法注册并提供快递服务的企业及其加盟、代理企业，参与无人快递车相关数据交换。",
+                                         "category_path":  [
+                                                               "组织机构"
+                                                           ],
+                                         "wiki_path":  "entity/组织机构/快递服务组织",
+                                         "depth":  1
+                                     }
+                                 ]
+                   },
+                   {
+                       "type":  "concept",
+                       "total":  18,
+                       "items":  [
+                                     {
+                                         "slug":  "concept/ipsec-vpn-zhuanyong-chuanshu-tongdao",
+                                         "title":  "IPsec VPN专用传输通道",
+                                         "summary":  "介绍国家邮政局与企业之间建立的IPsec VPN专用网络传输通道及其在无人快递车业务数据交换中的安全作用。",
+                                         "category_path":  [
+                                                               "信息技术",
+                                                               "信息安全"
+                                                           ],
+                                         "wiki_path":  "concept/信息技术/信息安全/IPsec VPN专用传输通道",
+                                         "depth":  2
+                                     },
+                                     {
+                                         "slug":  "concept/guomi-j加密-yu-shuzi-qianming",
+                                         "title":  "国密加密与数字签名",
+                                         "summary":  "国密加密与数字签名采用SM2、SM3和SM4等算法，对业务报文进行加密、签名、验签和密钥保护。",
+                                         "category_path":  [
+                                                               "信息技术",
+                                                               "信息安全"
+                                                           ],
+                                         "wiki_path":  "concept/信息技术/信息安全/国密加密与数字签名",
+                                         "depth":  2
+                                     },
+                                     {
+                                         "slug":  "concept/jiekou-fangwen-quanxian-kongzhi",
+                                         "title":  "接口访问权限控制",
+                                         "summary":  "介绍接口访问权限控制的定义、应用身份凭据，以及请求中必须携带的身份、时间和签名参数。",
+                                         "category_path":  [
+                                                               "信息技术",
+                                                               "信息安全"
+                                                           ],
+                                         "wiki_path":  "concept/信息技术/信息安全/接口访问权限控制",
+                                         "depth":  2
+                                     },
+                                     {
+                                         "slug":  "concept/http-post-api-tongxin",
+                                         "title":  "HTTP POST API通信",
+                                         "summary":  "HTTP POST API通信以HTTP协议和POST方法实现报文请求与响应，采用JSON格式、UTF-8编码，并通过接收端URL提供接口服务。",
+                                         "category_path":  [
+                                                               "信息技术",
+                                                               "接口与数据交换"
+                                                           ],
+                                         "wiki_path":  "concept/信息技术/接口与数据交换/HTTP POST API通信",
+                                         "depth":  2
+                                     },
+                                     {
+                                         "slug":  "concept/json-shuju-jiaohuan-xieyi",
+                                         "title":  "JSON数据交换协议",
+                                         "summary":  "JSON数据交换协议用于国家邮政局无人快递车接口中封装公共参数、业务参数、文件及签名信息，并支持JSON格式的接口交互与加密报文传输。",
+                                         "category_path":  [
+                                                               "信息技术",
+                                                               "接口与数据交换"
+                                                           ],
+                                         "wiki_path":  "concept/信息技术/接口与数据交换/JSON数据交换协议",
+                                         "depth":  2
+                                     },
+                                     {
+                                         "slug":  "concept/baowen-cuowu-ma-yu-yichang-chongshi",
+                                         "title":  "报文错误码与异常重试",
+                                         "summary":  "报文错误码与异常重试通过统一结果码识别处理状态，并在无响应或接收失败时按约定限制执行重发。",
+                                         "category_path":  [
+                                                               "信息技术",
+                                                               "接口与数据交换"
+                                                           ],
+                                         "wiki_path":  "concept/信息技术/接口与数据交换/报文错误码与异常重试",
+                                         "depth":  2
+                                     },
+                                     {
+                                         "slug":  "concept/wuren-kuaidi-che-jiekou-shuju-jiaohuan",
+                                         "title":  "无人快递车接口数据交换",
+                                         "summary":  "介绍国家邮政局与相关企业通过统一接口交换快递服务及无人快递车信息的通信方式、报文结构和业务数据内容。",
+                                         "category_path":  [
+                                                               "信息技术",
+                                                               "接口与数据交换"
+                                                           ],
+                                         "wiki_path":  "concept/信息技术/接口与数据交换/无人快递车接口数据交换",
+                                         "depth":  2
+                                     },
+                                     {
+                                         "slug":  "concept/wuren-kuaidi-che-shuju-tuisong-pinci",
+                                         "title":  "无人快递车数据推送频次",
+                                         "summary":  "无人快递车数据推送频次规定企业向国家邮政局推送信息的时间频率和触发条件，安全管理员接管数据实时同步，接管开始和结束时各同步一次。",
+                                         "category_path":  [
+                                                               "信息技术",
+                                                               "接口与数据交换"
+                                                           ],
+                                         "wiki_path":  "concept/信息技术/接口与数据交换/无人快递车数据推送频次",
+                                         "depth":  2
+                                     },
+                                     {
+                                         "slug":  "concept/biaozhun-daima-yu-shuju-yuan-guifan-hua",
+                                         "title":  "标准代码与数据元规范化",
+                                         "summary":  "标准代码与数据元规范化统一企业、行政区划、车辆及业务代码，并明确字段类型、长度、格式和编码规则。",
+                                         "category_path":  [
+                                                               "信息技术",
+                                                               "数据标准化"
+                                                           ],
+                                         "wiki_path":  "concept/信息技术/数据标准化/标准代码与数据元规范化",
+                                         "depth":  2
+                                     },
+                                     {
+                                         "slug":  "concept/wuren-kuaidi-che-shigu-xinxi-baosong",
+                                         "title":  "无人快递车事故信息报送",
+                                         "summary":  "无人快递车事故信息报送通过统一 API 接口提交事故及车辆信息，规定请求方式、数据编码、公共参数，以及事故编码、时间、地点和类型等业务字段。",
+                                         "category_path":  [
+                                                               "无人快递车管理",
+                                                               "安全管理"
+                                                           ],
+                                         "wiki_path":  "concept/无人快递车管理/安全管理/无人快递车事故信息报送",
+                                         "depth":  2
+                                     },
+                                     {
+                                         "slug":  "concept/wuren-kuaidi-che-baojing-xinxi-guanli",
+                                         "title":  "无人快递车报警信息管理",
+                                         "summary":  "本页说明无人快递车报警信息管理的接口方式、报警事件字段、报警类型与级别、车辆运行状态及请求示例。",
+                                         "category_path":  [
+                                                               "无人快递车管理",
+                                                               "安全管理"
+                                                           ],
+                                         "wiki_path":  "concept/无人快递车管理/安全管理/无人快递车报警信息管理",
+                                         "depth":  2
+                                     },
+                                     {
+                                         "slug":  "concept/wuren-kuaidi-che-yunying-xianlu-anquan-jiancha-jilu",
+                                         "title":  "无人快递车运营线路安全检查记录",
+                                         "summary":  "无人快递车运营线路安全检查记录是记录线路检查时间、方式、人员、覆盖范围和隐患结论的接口业务数据，本文列出其交互定义、报文结构及字段要求。",
+                                         "category_path":  [
+                                                               "无人快递车管理",
+                                                               "安全管理"
+                                                           ],
+                                         "wiki_path":  "concept/无人快递车管理/安全管理/无人快递车运营线路安全检查记录",
+                                         "depth":  2
+                                     },
+                                     {
+                                         "slug":  "concept/teshu-gangwei-renyuan-anquan-guanli",
+                                         "title":  "特殊岗位人员安全管理",
+                                         "summary":  "特殊岗位人员安全管理涵盖无人快递车安全员、网格员和调度管理员的人员资质、岗位状态及培训考核记录，包括证件要求、人员信息维护和培训记录字段。",
+                                         "category_path":  [
+                                                               "无人快递车管理",
+                                                               "安全管理"
+                                                           ],
+                                         "wiki_path":  "concept/无人快递车管理/安全管理/特殊岗位人员安全管理",
+                                         "depth":  2
+                                     },
+                                     {
+                                         "slug":  "concept/wuren-kuaidi-che-shengming-zhouqi-guanli",
+                                         "title":  "无人快递车生命周期管理",
+                                         "summary":  "无人快递车生命周期管理记录车辆从制造、交付、运营、维修、整改、升级到退出使用的状态及相关业务信息。",
+                                         "category_path":  [
+                                                               "无人快递车管理",
+                                                               "车辆档案与维护"
+                                                           ],
+                                         "wiki_path":  "concept/无人快递车管理/车辆档案与维护/无人快递车生命周期管理",
+                                         "depth":  2
+                                     },
+                                     {
+                                         "slug":  "concept/wuren-kuaidi-che-kongzhong-shengji-jilu",
+                                         "title":  "无人快递车空中升级记录",
+                                         "summary":  "无人快递车空中升级记录包含远程软件升级的研发制造主体、车辆身份、升级时间、模块及摘要，本页列明其 OTA 接口交互方式、请求参数与字段要求。",
+                                         "category_path":  [
+                                                               "无人快递车管理",
+                                                               "车辆档案与维护"
+                                                           ],
+                                         "wiki_path":  "concept/无人快递车管理/车辆档案与维护/无人快递车空中升级记录",
+                                         "depth":  2
+                                     },
+                                     {
+                                         "slug":  "concept/wuren-kuaidi-che-yunying-quyu-guanli",
+                                         "title":  "无人快递车运营区域管理",
+                                         "summary":  "本页说明无人快递车运营区域信息的登记维护内容、接口交互方式、字段要求及区域状态和操作状态代码。",
+                                         "category_path":  [
+                                                               "无人快递车管理",
+                                                               "运营管理"
+                                                           ],
+                                         "wiki_path":  "concept/无人快递车管理/运营管理/无人快递车运营区域管理",
+                                         "depth":  2
+                                     },
+                                     {
+                                         "slug":  "concept/wuren-kuaidi-che-yunying-changsuo-xinxi-guanli",
+                                         "title":  "无人快递车运营场所信息管理",
+                                         "summary":  "本页说明无人快递车运营场所信息的记录内容、接口交互方式、字段要求、位置格式、状态代码和操作类型。",
+                                         "category_path":  [
+                                                               "无人快递车管理",
+                                                               "运营管理"
+                                                           ],
+                                         "wiki_path":  "concept/无人快递车管理/运营管理/无人快递车运营场所信息管理",
+                                         "depth":  2
+                                     },
+                                     {
+                                         "slug":  "concept/wuren-kuaidi-che-shishi-yunxing-jiankong",
+                                         "title":  "无人快递车实时运行监控",
+                                         "summary":  "介绍无人快递车实时运行监控的采集内容、接口方式、状态字段、编码要求及关键运行参数格式。",
+                                         "category_path":  [
+                                                               "无人快递车管理",
+                                                               "运行监控"
+                                                           ],
+                                         "wiki_path":  "concept/无人快递车管理/运行监控/无人快递车实时运行监控",
+                                         "depth":  2
+                                     }
+                                 ]
+                   },
+                   {
+                       "type":  "synthesis",
+                       "total":  0,
+                       "items":  [
+
+                                 ]
+                   },
+                   {
+                       "type":  "comparison",
+                       "total":  0,
+                       "items":  [
+
+                                 ]
+                   }
+               ]
+}
