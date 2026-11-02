@@ -1,0 +1,16 @@
+dist/
+node_modules/
+.playwright-cli/
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts
+*.local
+.env
+.env.*
+
+# 调试时导出的后端响应快照
+graph-response.json
+docs-response.json
+wiki-response.json
+openapi.json
+swagger.html
