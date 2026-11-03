@@ -13,8 +13,8 @@ import re
 from pathlib import Path
 
 PYTHON_DIR = Path(__file__).resolve().parents[1]
-# backend → python → 仓库根
-REPO_ROOT = PYTHON_DIR.parents[1]
+# backend → python → refactor → 仓库根
+REPO_ROOT = PYTHON_DIR.parents[2]
 SWAGGER = REPO_ROOT / "docs" / "swagger.json"
 FRONTEND_API = REPO_ROOT / "frontend" / "src" / "api"
 ROUTES_DIR = PYTHON_DIR / "app" / "api" / "v1" / "routes"

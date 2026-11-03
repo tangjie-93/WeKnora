@@ -1,0 +1,350 @@
+# Python 后端重构实时进度快照
+
+生成日期：`2026-11-03`
+
+- Swagger 接口：`434`
+- 前端实际调用：`368`
+- Python 已实现：`101`
+- 前端调用覆盖率：`27.4%`
+- 全部契约缺失路由：`749`
+- 前端调用但 Python 缺失：`315`
+- 前端 API/页面/Store/测试文件：`47` / `162` / `44` / `325`
+
+## 阶段报告
+
+| 阶段 | 内容 | 结果 | 报告 |
+| --- | --- | --- | --- |
+| `phase0` | Phase 0 工程骨架 | 6/6 通过 | `stage_report_phase0.md` |
+| `phase1` | Phase 1 基础设施与认证 | 22/22 通过 | `stage_report_phase1.md` |
+| `phase2` | Phase 2 模型网关 | 13/13 通过 | `stage_report_phase2.md` |
+| `phase3` | Phase 3 知识库与入库 | 11/11 通过 | `stage_report_phase3.md` |
+| `phase4` | Phase 4 混合检索 | 6/6 通过 | `stage_report_phase4.md` |
+| `phase5` | Phase 5 对话与引用 | 11/11 通过 | `stage_report_phase5.md` |
+| `phase6` | Phase 6A 知识组织：标签 / 文件夹 / FAQ | 25/25 通过 | `stage_report_phase6.md` |
+| `phase6b` | Phase 6B 知识组织：Wiki 页面树 / 版本回滚 / 图谱 | 18/18 通过 | `stage_report_phase6b.md` |
+| `phase7a` | Phase 7A Agent：自定义 Agent CRUD + 编辑器元数据 | 15/15 通过 | `stage_report_phase7a.md` |
+| `phase7b` | Phase 7B Agent：ReAct 引擎 + 内置工具 + agent-chat | 9/9 通过 | `stage_report_phase7b.md` |
+| `phase8a` | Phase 8A 集成：MCP Endpoint（Server）+ 公开 Streamable HTTP | 14/14 通过 | `stage_report_phase8a.md` |
+| `phase8b` | Phase 8B 集成：MCP Client（Service）管理 + 凭证/审批/目录 | 12/13 通过 | `stage_report_phase8b.md` |
+
+## 未实现路由（完整清单）
+
+详见 [route_matrix.md](./route_matrix.md)；下面列出前端已调用但 Python 缺失的路径，便于选取下一批迁移任务。
+
+- `/api/v1/agent/grants`
+- `/api/v1/agent/mcp-oauth-resolutions/{}`
+- `/api/v1/agent/mcp-oauth-resolutions/{}/cancel`
+- `/api/v1/agent/prompts/{}`
+- `/api/v1/agent/tool-approvals/{}`
+- `/api/v1/agents/{}/embed-channels`
+- `/api/v1/agents/{}/embed-channels`
+- `/api/v1/agents/{}/im-channels`
+- `/api/v1/agents/{}/im-channels`
+- `/api/v1/agents/{}/shares`
+- `/api/v1/agents/{}/shares`
+- `/api/v1/agents/{}/shares/{}`
+- `/api/v1/agents/{}/suggested-questions${qs `
+- `/api/v1/agents{}`
+- `/api/v1/artifacts`
+- `/api/v1/auth/auto-setup`
+- `/api/v1/auth/change-password`
+- `/api/v1/auth/invitations/lookup`
+- `/api/v1/auth/me/preferences`
+- `/api/v1/auth/oidc/config`
+- `/api/v1/auth/oidc/url`
+- `/api/v1/auth/register-by-invite`
+- `/api/v1/automation-runs/{}/cancel`
+- `/api/v1/chunker/preview`
+- `/api/v1/chunks/by-id/{}`
+- `/api/v1/chunks/by-id/{}/questions`
+- `/api/v1/chunks/by-id/{}/questions/regenerate`
+- `/api/v1/chunks/{}/{}`
+- `/api/v1/chunks/{}/{}/revert`
+- `/api/v1/chunks/{}/{}/revisions`
+- `/api/v1/datasource`
+- `/api/v1/datasource`
+- `/api/v1/datasource/types`
+- `/api/v1/datasource/validate-credentials`
+- `/api/v1/datasource/{}`
+- `/api/v1/datasource/{}`
+- `/api/v1/datasource/{}/credentials`
+- `/api/v1/datasource/{}/logs`
+- `/api/v1/datasource/{}/pause`
+- `/api/v1/datasource/{}/resource-ancestors`
+- `/api/v1/datasource/{}/resources{}`
+- `/api/v1/datasource/{}/resume`
+- `/api/v1/datasource/{}/sync`
+- `/api/v1/datasource/{}/validate`
+- `/api/v1/embed-channels`
+- `/api/v1/embed-channels/{}`
+- `/api/v1/embed-channels/{}`
+- `/api/v1/embed-channels/{}/preview-session`
+- `/api/v1/embed-channels/{}/rotate-token`
+- `/api/v1/embed-channels/{}/stats`
+- `/api/v1/embed/{}/chunks/{}`
+- `/api/v1/embed/{}/config`
+- `/api/v1/embed/{}/exchange`
+- `/api/v1/embed/{}/messages/{}/load`
+- `/api/v1/embed/{}/sessions`
+- `/api/v1/embed/{}/sessions/{}/events`
+- `/api/v1/embed/{}/sessions/{}/mcp-oauth-resolutions/{}`
+- `/api/v1/embed/{}/sessions/{}/mcp-oauth-resolutions/{}/cancel`
+- `/api/v1/embed/{}/sessions/{}/mcp-services/{}/oauth/authorize-url`
+- `/api/v1/embed/{}/sessions/{}/mcp-services/{}/oauth/status{}`
+- `/api/v1/embed/{}/sessions/{}/messages/{}/suggestions`
+- `/api/v1/embed/{}/sessions/{}/messages/{}/suggestions`
+- `/api/v1/embed/{}/sessions/{}/prompts/{}`
+- `/api/v1/embed/{}/sessions/{}/stop`
+- `/api/v1/embed/{}/sessions/{}/suggestion-events`
+- `/api/v1/embed/{}/sessions/{}/tool-approvals/{}`
+- `/api/v1/embed/{}/suggested-questions{}`
+- `/api/v1/faq/import/progress/{}`
+- `/api/v1/im-channels`
+- `/api/v1/im-channels/{}`
+- `/api/v1/im-channels/{}/toggle`
+- `/api/v1/image-attrs/schema`
+- `/api/v1/image-pipelines`
+- `/api/v1/image-pipelines/validate`
+- `/api/v1/initialization/asr/check`
+- `/api/v1/initialization/config/{}`
+- `/api/v1/initialization/config/{}`
+- `/api/v1/initialization/embedding/test`
+- `/api/v1/initialization/extract/fabri-tag`
+- `/api/v1/initialization/extract/fabri-text`
+- `/api/v1/initialization/extract/text-relation`
+- `/api/v1/initialization/initialize/{}`
+- `/api/v1/initialization/ollama/download/progress/{}`
+- `/api/v1/initialization/ollama/download/tasks`
+- `/api/v1/initialization/ollama/models`
+- `/api/v1/initialization/ollama/models/check`
+- `/api/v1/initialization/ollama/models/download`
+- `/api/v1/initialization/ollama/status`
+- `/api/v1/initialization/remote/check`
+- `/api/v1/initialization/rerank/check`
+- `/api/v1/knowledge-bases/copy`
+- `/api/v1/knowledge-bases/{}/activity${qs `
+- `/api/v1/knowledge-bases/{}/duplicate`
+- `/api/v1/knowledge-bases/{}/faq/entries`
+- `/api/v1/knowledge-bases/{}/faq/entries{}`
+- `/api/v1/knowledge-bases/{}/faq/import/last-result/display`
+- `/api/v1/knowledge-bases/{}/gallery-config`
+- `/api/v1/knowledge-bases/{}/images`
+- `/api/v1/knowledge-bases/{}/images${qs `
+- `/api/v1/knowledge-bases/{}/knowledge/batch-download`
+- `/api/v1/knowledge-bases/{}/move-targets`
+- `/api/v1/knowledge-bases/{}/pin`
+- `/api/v1/knowledge-bases/{}/profile/generate`
+- `/api/v1/knowledge-bases/{}/rebuild-index`
+- `/api/v1/knowledge-bases/{}/shares`
+- `/api/v1/knowledge-bases/{}/shares`
+- `/api/v1/knowledge-bases/{}/shares/{}`
+- `/api/v1/knowledge-bases/{}/tags{}`
+- `/api/v1/knowledge/batch`
+- `/api/v1/knowledge/batch-delete`
+- `/api/v1/knowledge/batch-reparse`
+- `/api/v1/knowledge/folder`
+- `/api/v1/knowledge/manual/{}`
+- `/api/v1/knowledge/move/progress/{}`
+- `/api/v1/knowledge/search`
+- `/api/v1/knowledge/{}`
+- `/api/v1/knowledge/{}/cancel-parse`
+- `/api/v1/knowledge/{}/regenerate-summary`
+- `/api/v1/knowledge/{}/spans{}`
+- `/api/v1/knowledgebase/{}/wiki/folders`
+- `/api/v1/knowledgebase/{}/wiki/folders${qs `
+- `/api/v1/knowledgebase/{}/wiki/folders/{}`
+- `/api/v1/knowledgebase/{}/wiki/graph${qs `
+- `/api/v1/knowledgebase/{}/wiki/index{}`
+- `/api/v1/knowledgebase/{}/wiki/issues`
+- `/api/v1/knowledgebase/{}/wiki/issues/{}/status`
+- `/api/v1/knowledgebase/{}/wiki/move-page`
+- `/api/v1/knowledgebase/{}/wiki/pages`
+- `/api/v1/knowledgebase/{}/wiki/pages${qs `
+- `/api/v1/knowledgebase/{}/wiki/pages/{}`
+- `/api/v1/knowledgebase/{}/wiki/pages/{}`
+- `/api/v1/knowledgebase/{}/wiki/rebuild-links`
+- `/api/v1/knowledgebase/{}/wiki/revert`
+- `/api/v1/knowledgebase/{}/wiki/revisions/{}`
+- `/api/v1/knowledgebase/{}/wiki/revisions/{}${qs `
+- `/api/v1/knowledgebase/{}/wiki/search`
+- `/api/v1/knowledgebase/{}/wiki/stats`
+- `/api/v1/mcp-services/{}/oauth/authorize-url`
+- `/api/v1/mcp-services/{}/oauth/status`
+- `/api/v1/mcp-services/{}/oauth/status{}`
+- `/api/v1/mcp-services/{}/usage-instructions/generate`
+- `/api/v1/me/env-vars`
+- `/api/v1/me/env-vars/sandbox`
+- `/api/v1/me/env-vars/skill`
+- `/api/v1/me/invitations/accept-by-token`
+- `/api/v1/me/invitations/pending-count`
+- `/api/v1/me/invitations/{}/accept`
+- `/api/v1/me/invitations/{}/decline`
+- `/api/v1/me/invitations{}`
+- `/api/v1/memory/consolidate`
+- `/api/v1/memory/documents{}`
+- `/api/v1/memory/export`
+- `/api/v1/memory/items`
+- `/api/v1/memory/items/{}`
+- `/api/v1/memory/items/{}/confirm`
+- `/api/v1/memory/items/{}/reject`
+- `/api/v1/memory/items{}`
+- `/api/v1/memory/settings`
+- `/api/v1/memory/settings`
+- `/api/v1/memory/topics/{}/promote`
+- `/api/v1/memory/topics{}`
+- `/api/v1/messages/chat-history-stats`
+- `/api/v1/messages/search`
+- `/api/v1/models/catalog/resolve`
+- `/api/v1/models/weknoracloud/status`
+- `/api/v1/models/{}/copy`
+- `/api/v1/models/{}/credentials`
+- `/api/v1/notifications`
+- `/api/v1/notifications/read`
+- `/api/v1/organizations`
+- `/api/v1/organizations`
+- `/api/v1/organizations/join`
+- `/api/v1/organizations/join-by-id`
+- `/api/v1/organizations/join-request`
+- `/api/v1/organizations/preview/{}`
+- `/api/v1/organizations/search`
+- `/api/v1/organizations/{}`
+- `/api/v1/organizations/{}`
+- `/api/v1/organizations/{}/agent-shares`
+- `/api/v1/organizations/{}/invite`
+- `/api/v1/organizations/{}/invite-code`
+- `/api/v1/organizations/{}/join-requests`
+- `/api/v1/organizations/{}/join-requests/{}/review`
+- `/api/v1/organizations/{}/leave`
+- `/api/v1/organizations/{}/members`
+- `/api/v1/organizations/{}/members/{}`
+- `/api/v1/organizations/{}/request-upgrade`
+- `/api/v1/organizations/{}/search-tenants`
+- `/api/v1/organizations/{}/shared-agents`
+- `/api/v1/organizations/{}/shared-knowledge-bases`
+- `/api/v1/organizations/{}/shares`
+- `/api/v1/sandbox-configs`
+- `/api/v1/sandbox-configs`
+- `/api/v1/sandbox-configs/templates/query`
+- `/api/v1/sandbox-configs/workspace-policy`
+- `/api/v1/sandbox-configs/{}`
+- `/api/v1/sandbox-configs/{}`
+- `/api/v1/sandbox-configs/{}/sandboxes`
+- `/api/v1/sandbox-configs/{}/skills`
+- `/api/v1/sandbox-configs/{}/skills`
+- `/api/v1/sandbox-configs/{}/skills/{}`
+- `/api/v1/sandbox-configs/{}/skills/{}`
+- `/api/v1/sandbox-configs/{}/skills/{}/files`
+- `/api/v1/sandbox-configs/{}/skills/{}/files/content`
+- `/api/v1/sandbox-configs/{}/skills/{}/guidance`
+- `/api/v1/sandbox-configs/{}/skills/{}/guidance`
+- `/api/v1/sandbox-configs/{}/skills/{}/reinstall`
+- `/api/v1/sandbox-configs/{}/skills/{}/stop`
+- `/api/v1/sandbox-configs/{}/user-sandboxes`
+- `/api/v1/sandbox-configs/{}/user-sandboxes/{}/release`
+- `/api/v1/sessions/{}/artifacts`
+- `/api/v1/sessions/{}/attachments/{}`
+- `/api/v1/sessions/{}/fork`
+- `/api/v1/sessions/{}/messages/{}/artifacts`
+- `/api/v1/sessions/{}/messages/{}/suggestions`
+- `/api/v1/sessions/{}/messages/{}/suggestions`
+- `/api/v1/sessions/{}/pin`
+- `/api/v1/sessions/{}/rewind`
+- `/api/v1/sessions/{}/steer`
+- `/api/v1/sessions/{}/steer`
+- `/api/v1/sessions/{}/steer/{}/inject`
+- `/api/v1/sessions/{}/stop`
+- `/api/v1/sessions/{}/suggestion-events`
+- `/api/v1/shared-agents`
+- `/api/v1/shared-agents/disabled`
+- `/api/v1/shared-knowledge-bases`
+- `/api/v1/skills`
+- `/api/v1/skills/catalog`
+- `/api/v1/skills/catalog`
+- `/api/v1/skills/catalog/{}/files`
+- `/api/v1/skills/catalog/{}/files/content`
+- `/api/v1/storage-backends`
+- `/api/v1/storage-backends`
+- `/api/v1/storage-backends/test`
+- `/api/v1/storage-backends/types`
+- `/api/v1/storage-backends/{}`
+- `/api/v1/storage-backends/{}/default`
+- `/api/v1/storage-backends/{}/test`
+- `/api/v1/system/admin/api-keys`
+- `/api/v1/system/admin/api-keys`
+- `/api/v1/system/admin/promote`
+- `/api/v1/system/admin/revoke`
+- `/api/v1/system/admin/runtime/queues`
+- `/api/v1/system/admin/runtime/queues/{}/tasks`
+- `/api/v1/system/admin/runtime/queues/{}/tasks/{}/actions/{}`
+- `/api/v1/system/admin/settings`
+- `/api/v1/system/admin/settings/{}`
+- `/api/v1/system/admin/settings/{}`
+- `/api/v1/system/admin/tenants/apply-default-storage-quota`
+- `/api/v1/system/admin/users/create`
+- `/api/v1/system/admin/users/reset-password`
+- `/api/v1/system/admin/users/status`
+- `/api/v1/system/admin/users{}`
+- `/api/v1/system/capabilities`
+- `/api/v1/system/docreader/reconnect`
+- `/api/v1/system/info`
+- `/api/v1/system/parser-engines`
+- `/api/v1/system/parser-engines/check`
+- `/api/v1/system/sandbox-check`
+- `/api/v1/system/storage-engine-check`
+- `/api/v1/system/storage-engine-status`
+- `/api/v1/tenants`
+- `/api/v1/tenants/all`
+- `/api/v1/tenants/kv/assistant-config`
+- `/api/v1/tenants/kv/assistant-config`
+- `/api/v1/tenants/kv/chat-history-config`
+- `/api/v1/tenants/kv/chat-history-config`
+- `/api/v1/tenants/kv/default-settings`
+- `/api/v1/tenants/kv/default-settings`
+- `/api/v1/tenants/kv/memory-config`
+- `/api/v1/tenants/kv/memory-config`
+- `/api/v1/tenants/kv/parser-engine-config`
+- `/api/v1/tenants/kv/parser-engine-config`
+- `/api/v1/tenants/kv/prompt-templates`
+- `/api/v1/tenants/kv/retrieval-config`
+- `/api/v1/tenants/kv/retrieval-config`
+- `/api/v1/tenants/kv/storage-engine-config`
+- `/api/v1/tenants/kv/storage-engine-config`
+- `/api/v1/tenants/kv/web-search-config`
+- `/api/v1/tenants/kv/web-search-config`
+- `/api/v1/tenants/{}`
+- `/api/v1/tenants/{}/api-keys`
+- `/api/v1/tenants/{}/api-keys`
+- `/api/v1/tenants/{}/api-keys/{}`
+- `/api/v1/tenants/{}/api-principal-config`
+- `/api/v1/tenants/{}/api-principal-config`
+- `/api/v1/tenants/{}/api-principal-test-token`
+- `/api/v1/tenants/{}/invitations`
+- `/api/v1/tenants/{}/invitations{}`
+- `/api/v1/tenants/{}/invite-links`
+- `/api/v1/tenants/{}/leave`
+- `/api/v1/tenants/{}/members`
+- `/api/v1/tenants/{}/members/{}`
+- `/api/v1/tenants/{}/members{}`
+- `/api/v1/user/favorites`
+- `/api/v1/user/favorites`
+- `/api/v1/vector-stores`
+- `/api/v1/vector-stores`
+- `/api/v1/vector-stores/test`
+- `/api/v1/vector-stores/types`
+- `/api/v1/vector-stores/{}`
+- `/api/v1/vector-stores/{}/test`
+- `/api/v1/web-search-providers`
+- `/api/v1/web-search-providers`
+- `/api/v1/web-search-providers/test`
+- `/api/v1/web-search-providers/types`
+- `/api/v1/web-search-providers/{}`
+- `/api/v1/web-search-providers/{}`
+- `/api/v1/web-search-providers/{}`
+- `/api/v1/web-search-providers/{}/credentials`
+- `/api/v1/web-search-providers/{}/test`
+- `/api/v1/web-search/providers`
+- `/api/v1/wechat/qrcode`
+- `/api/v1/wechat/qrcode/status`
+- `/api/v1/weknoracloud/credentials`
+
+更新命令：`py -3.13 scripts/generate_route_matrix.py; py -3.13 scripts/update_refactor_progress.py`。

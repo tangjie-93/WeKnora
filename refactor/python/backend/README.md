@@ -1,5 +1,7 @@
 # WeKnora Python Backend
 
+架构与迁移路线见 [Python后端技术架构与从0到1迁移指南](../../docs/architecture/Python后端技术架构与从0到1迁移指南.md)，当前进度见 [Python后端重构进度管理](../../docs/progress/Python后端重构进度管理.md)。
+
 ## 启动服务
 
 在 `PowerShell` 中执行：

@@ -2,13 +2,15 @@
 
 由 `scripts/generate_route_matrix.py` 自动生成，请勿手工编辑。
 
-- Swagger 接口：395
-- 前端实际调用：361
-- Python 已实现：87
+- Swagger 接口：434
+- 前端实际调用：368
+- Python 已实现：101
 
 | 方法 | 路径 | Swagger | 前端调用 | Python 实现 |
 |---|---|---|---|---|
 | POST | `/agent-chat/{}` | ✅ | — | — |
+| GET | `/agent/grants` | ✅ | — | — |
+| DELETE | `/agent/grants/{}` | ✅ | — | — |
 | POST | `/agent/mcp-oauth-resolutions/{}` | ✅ | — | — |
 | POST | `/agent/mcp-oauth-resolutions/{}/cancel` | ✅ | — | — |
 | POST | `/agent/prompts/{}` | ✅ | — | — |
@@ -26,6 +28,7 @@
 | DELETE | `/agents/{}/shares/{}` | ✅ | — | — |
 | GET | `/agents/{}/suggested-questions` | ✅ | — | — |
 | POST | `/api/v1/agent-chat/{}` | — | — | ✅ |
+| GET | `/api/v1/agent/grants` | — | ✅ | — |
 | POST | `/api/v1/agent/mcp-oauth-resolutions/{}` | — | ✅ | — |
 | POST | `/api/v1/agent/mcp-oauth-resolutions/{}/cancel` | — | ✅ | — |
 | POST | `/api/v1/agent/prompts/{}` | — | ✅ | — |
@@ -65,6 +68,7 @@
 | POST | `/api/v1/auth/register-by-invite` | — | ✅ | — |
 | GET | `/api/v1/auth/tenant` | — | ✅ | ✅ |
 | GET | `/api/v1/auth/validate` | — | ✅ | ✅ |
+| POST | `/api/v1/automation-runs/{}/cancel` | — | ✅ | — |
 | POST | `/api/v1/chunker/preview` | — | ✅ | — |
 | GET | `/api/v1/chunks/by-id/{}` | — | ✅ | — |
 | PUT | `/api/v1/chunks/by-id/{}/questions` | — | ✅ | — |
@@ -156,10 +160,10 @@
 | POST | `/api/v1/knowledge-bases/{}/hybrid-search` | — | — | ✅ |
 | POST | `/api/v1/knowledge-bases/{}/images` | — | ✅ | — |
 | GET | `/api/v1/knowledge-bases/{}/images${qs ` | — | ✅ | — |
-| GET | `/api/v1/knowledge-bases/{}/knowledge` | — | ✅ | ✅ |
+| GET | `/api/v1/knowledge-bases/{}/knowledge` | — | — | ✅ |
 | POST | `/api/v1/knowledge-bases/{}/knowledge/batch-download` | — | ✅ | — |
 | POST | `/api/v1/knowledge-bases/{}/knowledge/file` | — | — | ✅ |
-| GET | `/api/v1/knowledge-bases/{}/knowledge/folders` | — | ✅ | ✅ |
+| GET | `/api/v1/knowledge-bases/{}/knowledge/folders` | — | — | ✅ |
 | PUT | `/api/v1/knowledge-bases/{}/knowledge/folders` | — | ✅ | ✅ |
 | POST | `/api/v1/knowledge-bases/{}/knowledge/manual` | — | ✅ | ✅ |
 | POST | `/api/v1/knowledge-bases/{}/knowledge/url` | — | ✅ | ✅ |
@@ -233,21 +237,23 @@
 | GET | `/api/v1/mcp-endpoints/{}` | — | — | ✅ |
 | PUT | `/api/v1/mcp-endpoints/{}` | — | — | ✅ |
 | POST | `/api/v1/mcp-endpoints/{}/rotate-token` | — | — | ✅ |
-| GET | `/api/v1/mcp-services` | — | ✅ | — |
-| POST | `/api/v1/mcp-services` | — | ✅ | — |
-| GET | `/api/v1/mcp-services/{}` | — | ✅ | — |
-| PUT | `/api/v1/mcp-services/{}` | — | ✅ | — |
-| PUT | `/api/v1/mcp-services/{}/credentials` | — | ✅ | — |
-| GET | `/api/v1/mcp-services/{}/metadata` | — | ✅ | — |
-| POST | `/api/v1/mcp-services/{}/metadata/refresh` | — | ✅ | — |
+| GET | `/api/v1/mcp-services` | — | ✅ | ✅ |
+| POST | `/api/v1/mcp-services` | — | ✅ | ✅ |
+| DELETE | `/api/v1/mcp-services/{}` | — | — | ✅ |
+| GET | `/api/v1/mcp-services/{}` | — | ✅ | ✅ |
+| PUT | `/api/v1/mcp-services/{}` | — | ✅ | ✅ |
+| PUT | `/api/v1/mcp-services/{}/credentials` | — | ✅ | ✅ |
+| DELETE | `/api/v1/mcp-services/{}/credentials/{}` | — | — | ✅ |
+| GET | `/api/v1/mcp-services/{}/metadata` | — | ✅ | ✅ |
+| POST | `/api/v1/mcp-services/{}/metadata/refresh` | — | ✅ | ✅ |
 | POST | `/api/v1/mcp-services/{}/oauth/authorize-url` | — | ✅ | — |
 | GET | `/api/v1/mcp-services/{}/oauth/status` | — | ✅ | — |
 | GET | `/api/v1/mcp-services/{}/oauth/status{}` | — | ✅ | — |
-| GET | `/api/v1/mcp-services/{}/resources` | — | ✅ | — |
-| POST | `/api/v1/mcp-services/{}/test` | — | ✅ | — |
-| GET | `/api/v1/mcp-services/{}/tool-approvals` | — | ✅ | — |
-| PUT | `/api/v1/mcp-services/{}/tool-approvals/{}` | — | ✅ | — |
-| GET | `/api/v1/mcp-services/{}/tools` | — | ✅ | — |
+| GET | `/api/v1/mcp-services/{}/resources` | — | ✅ | ✅ |
+| POST | `/api/v1/mcp-services/{}/test` | — | ✅ | ✅ |
+| GET | `/api/v1/mcp-services/{}/tool-approvals` | — | ✅ | ✅ |
+| PUT | `/api/v1/mcp-services/{}/tool-approvals/{}` | — | ✅ | ✅ |
+| GET | `/api/v1/mcp-services/{}/tools` | — | ✅ | ✅ |
 | POST | `/api/v1/mcp-services/{}/usage-instructions/generate` | — | ✅ | — |
 | GET | `/api/v1/me/env-vars` | — | ✅ | — |
 | PUT | `/api/v1/me/env-vars/sandbox` | — | ✅ | — |
@@ -282,6 +288,8 @@
 | POST | `/api/v1/models/{}/copy` | — | ✅ | — |
 | PUT | `/api/v1/models/{}/credentials` | — | ✅ | — |
 | POST | `/api/v1/models/{}/test` | — | — | ✅ |
+| GET | `/api/v1/notifications` | — | ✅ | — |
+| POST | `/api/v1/notifications/read` | — | ✅ | — |
 | GET | `/api/v1/organizations` | — | ✅ | — |
 | POST | `/api/v1/organizations` | — | ✅ | — |
 | POST | `/api/v1/organizations/join` | — | ✅ | — |
@@ -321,6 +329,8 @@
 | POST | `/api/v1/sandbox-configs/{}/skills/{}/guidance` | — | ✅ | — |
 | POST | `/api/v1/sandbox-configs/{}/skills/{}/reinstall` | — | ✅ | — |
 | POST | `/api/v1/sandbox-configs/{}/skills/{}/stop` | — | ✅ | — |
+| GET | `/api/v1/sandbox-configs/{}/user-sandboxes` | — | ✅ | — |
+| POST | `/api/v1/sandbox-configs/{}/user-sandboxes/{}/release` | — | ✅ | — |
 | GET | `/api/v1/sessions` | — | ✅ | ✅ |
 | POST | `/api/v1/sessions` | — | ✅ | ✅ |
 | DELETE | `/api/v1/sessions/{}` | — | — | ✅ |
@@ -385,6 +395,8 @@
 | PUT | `/api/v1/tenants/kv/assistant-config` | — | ✅ | — |
 | GET | `/api/v1/tenants/kv/chat-history-config` | — | ✅ | — |
 | PUT | `/api/v1/tenants/kv/chat-history-config` | — | ✅ | — |
+| GET | `/api/v1/tenants/kv/default-settings` | — | ✅ | — |
+| PUT | `/api/v1/tenants/kv/default-settings` | — | ✅ | — |
 | GET | `/api/v1/tenants/kv/memory-config` | — | ✅ | — |
 | PUT | `/api/v1/tenants/kv/memory-config` | — | ✅ | — |
 | GET | `/api/v1/tenants/kv/parser-engine-config` | — | ✅ | — |
@@ -423,6 +435,7 @@
 | POST | `/api/v1/web-search-providers/test` | — | ✅ | — |
 | GET | `/api/v1/web-search-providers/types` | — | ✅ | — |
 | GET | `/api/v1/web-search-providers/{}` | — | ✅ | — |
+| PATCH | `/api/v1/web-search-providers/{}` | — | ✅ | — |
 | PUT | `/api/v1/web-search-providers/{}` | — | ✅ | — |
 | PUT | `/api/v1/web-search-providers/{}/credentials` | — | ✅ | — |
 | POST | `/api/v1/web-search-providers/{}/test` | — | ✅ | — |
@@ -449,6 +462,22 @@
 | POST | `/auth/register-by-invite` | ✅ | — | — |
 | POST | `/auth/switch-tenant` | ✅ | — | — |
 | GET | `/auth/validate` | ✅ | — | — |
+| GET | `/automation-runs/{}` | ✅ | — | — |
+| POST | `/automation-runs/{}/cancel` | ✅ | — | — |
+| GET | `/automations` | ✅ | — | — |
+| POST | `/automations` | ✅ | — | — |
+| GET | `/automations/by-session/{}` | ✅ | — | — |
+| POST | `/automations/validate-trigger` | ✅ | — | — |
+| DELETE | `/automations/{}` | ✅ | — | — |
+| GET | `/automations/{}` | ✅ | — | — |
+| PUT | `/automations/{}` | ✅ | — | — |
+| GET | `/automations/{}/grant-candidates` | ✅ | — | — |
+| GET | `/automations/{}/grants` | ✅ | — | — |
+| POST | `/automations/{}/grants` | ✅ | — | — |
+| POST | `/automations/{}/pause` | ✅ | — | — |
+| POST | `/automations/{}/resume` | ✅ | — | — |
+| POST | `/automations/{}/run` | ✅ | — | — |
+| GET | `/automations/{}/runs` | ✅ | — | — |
 | POST | `/chunker/preview` | ✅ | — | — |
 | GET | `/chunks/by-id/{}` | ✅ | — | — |
 | DELETE | `/chunks/by-id/{}/questions` | ✅ | — | — |
@@ -456,6 +485,8 @@
 | GET | `/chunks/{}` | ✅ | — | — |
 | DELETE | `/chunks/{}/{}` | ✅ | — | — |
 | PUT | `/chunks/{}/{}` | ✅ | — | — |
+| POST | `/chunks/{}/{}/revert` | ✅ | — | — |
+| GET | `/chunks/{}/{}/revisions` | ✅ | — | — |
 | GET | `/datasource` | ✅ | — | — |
 | POST | `/datasource` | ✅ | — | — |
 | GET | `/datasource/logs/{}` | ✅ | — | — |
@@ -470,6 +501,7 @@
 | GET | `/datasource/{}/resources` | ✅ | — | — |
 | POST | `/datasource/{}/resume` | ✅ | — | — |
 | POST | `/datasource/{}/sync` | ✅ | — | — |
+| PATCH | `/datasource/{}/sync-settings` | ✅ | — | — |
 | POST | `/datasource/{}/validate` | ✅ | — | — |
 | GET | `/evaluation` | ✅ | — | — |
 | POST | `/evaluation` | ✅ | — | — |
@@ -509,6 +541,7 @@
 | POST | `/knowledge-bases/{}/duplicate` | ✅ | — | — |
 | DELETE | `/knowledge-bases/{}/faq/entries` | ✅ | — | — |
 | GET | `/knowledge-bases/{}/faq/entries` | ✅ | — | — |
+| PATCH | `/knowledge-bases/{}/faq/entries` | ✅ | — | — |
 | POST | `/knowledge-bases/{}/faq/entries` | ✅ | — | — |
 | GET | `/knowledge-bases/{}/faq/entries/export` | ✅ | — | — |
 | PUT | `/knowledge-bases/{}/faq/entries/fields` | ✅ | — | — |
@@ -519,6 +552,7 @@
 | POST | `/knowledge-bases/{}/faq/entry` | ✅ | — | — |
 | PUT | `/knowledge-bases/{}/faq/import/last-result/display` | ✅ | — | — |
 | POST | `/knowledge-bases/{}/faq/search` | ✅ | — | — |
+| POST | `/knowledge-bases/{}/graph-search` | ✅ | — | — |
 | GET | `/knowledge-bases/{}/hybrid-search` | ✅ | — | — |
 | POST | `/knowledge-bases/{}/hybrid-search` | ✅ | — | — |
 | GET | `/knowledge-bases/{}/images` | ✅ | — | — |
@@ -534,6 +568,7 @@
 | GET | `/knowledge-bases/{}/move-targets` | ✅ | — | — |
 | PUT | `/knowledge-bases/{}/pin` | ✅ | — | — |
 | POST | `/knowledge-bases/{}/profile/generate` | ✅ | — | — |
+| POST | `/knowledge-bases/{}/rebuild-index` | ✅ | — | — |
 | GET | `/knowledge-bases/{}/shares` | ✅ | — | — |
 | POST | `/knowledge-bases/{}/shares` | ✅ | — | — |
 | DELETE | `/knowledge-bases/{}/shares/{}` | ✅ | — | — |
@@ -642,11 +677,16 @@
 | POST | `/models` | ✅ | — | — |
 | GET | `/models/catalog/resolve` | ✅ | — | — |
 | GET | `/models/providers` | ✅ | — | — |
+| GET | `/models/providers/{}` | ✅ | — | — |
 | GET | `/models/weknoracloud/status` | ✅ | — | — |
 | DELETE | `/models/{}` | ✅ | — | — |
 | GET | `/models/{}` | ✅ | — | — |
+| PATCH | `/models/{}` | ✅ | — | — |
 | PUT | `/models/{}` | ✅ | — | — |
 | POST | `/models/{}/copy` | ✅ | — | — |
+| GET | `/notifications` | ✅ | — | — |
+| DELETE | `/notifications/read` | ✅ | — | — |
+| POST | `/notifications/read` | ✅ | — | — |
 | GET | `/organizations` | ✅ | — | — |
 | POST | `/organizations` | ✅ | — | — |
 | POST | `/organizations/join` | ✅ | — | — |
@@ -689,10 +729,13 @@
 | POST | `/sandbox-configs/{}/skills/{}/reinstall` | ✅ | — | — |
 | POST | `/sandbox-configs/{}/skills/{}/stop` | ✅ | — | — |
 | GET | `/sandbox-configs/{}/skills/{}/transcript` | ✅ | — | — |
+| GET | `/sandbox-configs/{}/user-sandboxes` | ✅ | — | — |
+| POST | `/sandbox-configs/{}/user-sandboxes/{}/release` | ✅ | — | — |
 | GET | `/sessions` | ✅ | — | — |
 | POST | `/sessions` | ✅ | — | — |
 | DELETE | `/sessions/batch` | ✅ | — | — |
 | GET | `/sessions/continue-stream/{}` | ✅ | — | — |
+| POST | `/sessions/transcriptions` | ✅ | — | — |
 | DELETE | `/sessions/{}` | ✅ | — | — |
 | GET | `/sessions/{}` | ✅ | — | — |
 | PUT | `/sessions/{}` | ✅ | — | — |
@@ -720,6 +763,7 @@
 | GET | `/skills/catalog` | ✅ | — | — |
 | POST | `/skills/catalog` | ✅ | — | — |
 | DELETE | `/skills/catalog/{}` | ✅ | — | — |
+| GET | `/skills/catalog/{}` | ✅ | — | — |
 | GET | `/skills/catalog/{}/files` | ✅ | — | — |
 | GET | `/skills/catalog/{}/files/content` | ✅ | — | — |
 | POST | `/skills/catalog/{}/install` | ✅ | — | — |
@@ -746,6 +790,7 @@
 | DELETE | `/system/admin/runtime/queues/{}/archived` | ✅ | — | — |
 | GET | `/system/admin/runtime/queues/{}/tasks` | ✅ | — | — |
 | POST | `/system/admin/runtime/queues/{}/tasks/{}/actions/{}` | ✅ | — | — |
+| GET | `/system/admin/settings-summary` | ✅ | — | — |
 | DELETE | `/system/admin/settings/{}` | ✅ | — | — |
 | GET | `/system/admin/settings/{}` | ✅ | — | — |
 | PUT | `/system/admin/settings/{}` | ✅ | — | — |
@@ -765,6 +810,9 @@
 | GET | `/tenants` | ✅ | — | — |
 | POST | `/tenants` | ✅ | — | — |
 | GET | `/tenants/all` | ✅ | — | — |
+| GET | `/tenants/current` | ✅ | — | — |
+| PATCH | `/tenants/current` | ✅ | — | — |
+| GET | `/tenants/current/members` | ✅ | — | — |
 | GET | `/tenants/kv/prompt-templates` | ✅ | — | — |
 | GET | `/tenants/kv/web-search-config` | ✅ | — | — |
 | GET | `/tenants/kv/{}` | ✅ | — | — |
@@ -797,10 +845,12 @@
 | GET | `/vector-stores/{}` | ✅ | — | — |
 | PUT | `/vector-stores/{}` | ✅ | — | — |
 | POST | `/vector-stores/{}/test` | ✅ | — | — |
+| GET | `/web-search-providers` | ✅ | — | — |
 | POST | `/web-search-providers/test` | ✅ | — | — |
 | GET | `/web-search-providers/types` | ✅ | — | — |
 | DELETE | `/web-search-providers/{}` | ✅ | — | — |
 | GET | `/web-search-providers/{}` | ✅ | — | — |
+| PATCH | `/web-search-providers/{}` | ✅ | — | — |
 | PUT | `/web-search-providers/{}` | ✅ | — | — |
 | POST | `/web-search-providers/{}/test` | ✅ | — | — |
 | GET | `/web-search/providers` | ✅ | — | — |
@@ -809,4 +859,4 @@
 | POST | `/weknoracloud/credentials` | ✅ | — | — |
 | POST | `/wiki-search` | ✅ | — | — |
 
-**覆盖率（以前端实际调用为分母）：** 87/361
+**覆盖率（以前端实际调用为分母）：** 101/368
