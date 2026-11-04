@@ -17,11 +17,12 @@
 
 ### 1.3 参与 Python 后端重构
 
-1. [Python 后端技术架构与迁移指南](./architecture/Python后端技术架构与从0到1迁移指南.md)：目标分层、阶段边界和实施顺序。
-2. [Python 后端重构进度管理](./progress/Python后端重构进度管理.md)：阶段状态、验收证据和当前下一步；这是迁移进度的唯一台账。
-3. [前后端实现清单](./progress/前后端实现清单.md)：核对前端真实调用和联通缺口。
-4. `refactor/python/backend/tests/contract/route_matrix.md`：接口覆盖的机器生成结果。
-5. `refactor/python/backend/tests/contract/progress_snapshot.md`：进度脚本生成的数字快照。
+1. [Python 全栈重构逐步实施计划](./Python全栈重构逐步实施计划.md)：按任务、文件、测试和验收标准逐步实现。
+2. [Python 后端技术架构与迁移指南](./architecture/Python后端技术架构与从0到1迁移指南.md)：目标分层、阶段边界和实施顺序。
+3. [Python 后端重构进度管理](./progress/Python后端重构进度管理.md)：阶段状态、验收证据和当前下一步；这是迁移进度的唯一台账。
+4. [前后端实现清单](./progress/前后端实现清单.md)：核对前端真实调用和联通缺口。
+5. `refactor/python/backend/tests/contract/route_matrix.md`：接口覆盖的机器生成结果。
+6. `refactor/python/backend/tests/contract/progress_snapshot.md`：进度脚本生成的数字快照。
 
 ### 1.4 学习前端实现
 
@@ -35,6 +36,7 @@
 | 本地部署与使用说明 | 可执行的部署和使用步骤 | 重构阶段进度 |
 | 外部项目集成方案 | 外部调用契约和示例 | 内部实现细节 |
 | 前后端实现清单 | 源码能力和联通快照 | 逐阶段执行记录 |
+| Python 全栈重构逐步实施计划 | 可照着执行的任务、文件、测试和验收步骤 | 实时阶段状态 |
 | Python 后端技术架构与迁移指南 | 目标架构和迁移方法 | 每日进度 |
 | Python 后端重构进度管理 | 阶段状态、证据和下一步 | 完整技术教程 |
 | 大模型使用梳理 | 模型调用影响面 | 后端迁移状态 |
