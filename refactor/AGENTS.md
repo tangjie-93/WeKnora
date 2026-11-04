@@ -1,5 +1,7 @@
 # Repository Guidelines
 
+Repository: [tangjie-93/WeKnora](https://github.com/tangjie-93/WeKnora). Clone with `git clone https://github.com/tangjie-93/WeKnora.git`.
+
 ## Project Structure & Module Organization
 
 This workspace contains the phased Python replacement for WeKnora. Preserve existing database schemas and `/api/v1` contracts.
