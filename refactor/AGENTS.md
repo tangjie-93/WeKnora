@@ -2,6 +2,8 @@
 
 仓库：[`tangjie-93/WeKnora`](https://github.com/tangjie-93/WeKnora)。使用 `git clone https://github.com/tangjie-93/WeKnora.git` 克隆。
 
+每次提交 `push`内容到 `github`仓库时，都需要更新 `docs/develop-process/changelog.md` 文件，记录下提交的内容,需要根据路由模块来总结，我想知道我当前项目的开发进度。
+
 ## 项目结构与模块组织
 
 此工作区包含分阶段替换 `WeKnora` 的 `Python` 实现。必须保留现有数据库结构和 `/api/v1` 接口契约。
