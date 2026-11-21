@@ -1,0 +1,7 @@
+{
+  "name": "weknora-python",
+  "private": true,
+  "scripts": {
+    "dev": "node scripts/dev.mjs"
+  }
+}
