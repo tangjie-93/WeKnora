@@ -1,7 +1,10 @@
 <template>
-    <HealthPage />
+    <WorkbenchLayout>
+        <RouterView />
+    </WorkbenchLayout>
 </template>
 
 <script setup lang="ts">
-import HealthPage from './views/health/index.vue';
+import { RouterView } from 'vue-router';
+import WorkbenchLayout from './layouts/WorkbenchLayout.vue';
 </script>

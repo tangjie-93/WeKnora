@@ -6,13 +6,15 @@ date: 2026-11-20
 run_mode: auto
 ---
 
-# Vue 前端：健康检查工作台
+# `Vue` 前端：学习工作台
 
-本轮只提供一个可点击的“检测后端连接”工作台：浏览器通过同源相对 `/health` 请求，经 Vite 开发代理访问 Python FastAPI。页面状态由 `@tanstack/vue-query` 管理，Pinia 只完成应用注册，不复制服务端结果。没有登录、上传、问答、SSE、持久化或模拟 trace。
+本轮范围是共享导航外壳与“服务检测／开发进度”两个页面，按已审核的 `C1–C5` 合同同步说明，不把方案当作运行证据。健康请求仍通过同源相对 `GET /health`，经 `Vite` 开发代理访问 `Python FastAPI`；请求状态由 `@tanstack/vue-query` 管理，`Pinia` 只注册、不复制服务端结果。本轮无后端行为变化，数据库、上传、解析、检索、问答未开始，整个 `S1` 未全量验收。
+
+**本轮实际验证（`2026-11-21`）：** 独立 CODE-REVIEW 为 `PASSED`，`P0/P1=0`，唯一 `P2` 报告定位文字已修正；TASK-04 本增量实际重跑 `27` 项 Node 测试与 `25` 个浏览器组（导航 `13`、健康回归 `11`、真实服务 `1`），均通过，必要项 failed/blocked 为 `0`，frozen 安装与类型检查／构建通过，未发现生产缺陷。证据：[独立审查](../../artifacts/weknora-learning-workbench/03-code/code-review-report.md)、[正式测试报告](../../artifacts/weknora-learning-workbench/04-e2e/test-report.md)、[测试用例](../../artifacts/weknora-learning-workbench/04-e2e/added-cases.md)；原理见[本轮学习指南](../../artifacts/weknora-learning-workbench/03-code/learning-guide.md)。本次仅同步已存在报告，不重跑测试；本轮只做导航增量，无后端行为变化。进度页仍是版本化静态事实，不是实时服务状态、工作流状态或运行 `trace`。真实失败恢复采用浏览器 offline/online，未停后端；取消与迟到响应含明确标注的受控注入，不冒称真实服务端故障。以下两段保留上一健康子项历史，不混用旧计数；数据库、上传、解析、检索、问答未开始，整个 `S1` 未全量验收，必要收尾与讲解后暂停等明确继续。
 
 **开发阶段快照（2026-11-20）：** 2026-11-20 主 developer 已真实完成 uv frozen dev 同步、锁一致性、Ruff、pnpm 10.11.0 frozen 安装与 vue-tsc/Vite 构建，均 exit 0；直连/代理 GET 返回精确 JSON 与 Python header；浏览器初始零请求、键盘触发成功、停本次后端后代理 HTTP 500 失败且隐藏旧成功、重启后恢复均通过。受控延迟转发确认请求中禁用且重复点击仅一次请求；network/http/protocol/timeout 为显式故障注入自检，不是后端真实业务错误。独立 CODE-REVIEW/TASK-04 尚未执行，测试 not-run，不算独立验收通过。
 
-**当前验证更新（2026-11-21）：** 独立 CODE-REVIEW 已 PASSED（P0/P1/P2 均 0）；TASK-04 已 completed，38 项自动测试（pytest 11 + Node 27）与 11 个浏览器检查组全部 passed，必需行为 failed/blocked 均 0。测试执行日期按正式报告为 2026-11-20（UTC），本次文档同步日期为 2026-11-21；不是重新执行测试。 [独立审查](../../artifacts/weknora-python-vue3-rebuild/03-code/code-review-report.md) · [正式测试报告](../../artifacts/weknora-python-vue3-rebuild/04-e2e/test-report.md) · [新增用例](../../artifacts/weknora-python-vue3-rebuild/04-e2e/added-cases.md)。上述待执行/not-run 仅属开发阶段历史，当前以正式报告为准；仅健康子项，不表示全 S1 或上传问答完成。main 收尾后暂停等待用户明确继续，本轮未提交推送。
+**上一健康子项验证更新（`2026-11-21`，历史证据）：** 独立 CODE-REVIEW 已 PASSED（P0/P1/P2 均 0）；TASK-04 已 completed，38 项自动测试（pytest 11 + Node 27）与 11 个浏览器检查组全部 passed，必需行为 failed/blocked 均 0。测试执行日期按正式报告为 2026-11-20（UTC），本次文档同步日期为 2026-11-21；不是重新执行测试。 [独立审查](../../artifacts/weknora-python-vue3-rebuild/03-code/code-review-report.md) · [正式测试报告](../../artifacts/weknora-python-vue3-rebuild/04-e2e/test-report.md) · [新增用例](../../artifacts/weknora-python-vue3-rebuild/04-e2e/added-cases.md)。上述待执行/not-run 仅属开发阶段历史，当前以正式报告为准；仅健康子项，不表示全 S1 或上传问答完成。main 收尾后暂停等待用户明确继续，本轮未提交推送。
 
 ## 1. 安装与构建
 
@@ -46,7 +48,9 @@ npm run dev
 pnpm dev --host 127.0.0.1
 ```
 
-打开 `http://127.0.0.1:5400`。Vite 默认只监听本机、`strictPort=true`，并且只将 `/health` 代理到 `http://127.0.0.1:8080`。浏览器代码始终请求相对 `/health`，不拼接后端绝对地址。
+打开 `http://127.0.0.1:5400/`，按本轮合同根入口跳转到 `/#/health`；“开发进度”为 `http://127.0.0.1:5400/#/progress`。两条导航支持直接访问、刷新和浏览器前进／后退；未知 hash（如 `/#/missing`）保留错误地址并显示未找到，通过返回服务检测链接恢复到 `/#/health`，不是第三个业务入口。
+
+`Vite` 默认只监听本机、`strictPort=true`，并且只将 HTTP `/health` 代理到 `http://127.0.0.1:8080`。`/#/health` 是浏览器页面，`GET /health` 是网络请求：hash 不发送给服务器，点击导航本身不调用后端。裸 `/progress` 不承诺为页面深链接，裸 `/health` 仍走开发代理。浏览器请求不拼接后端绝对地址；生产静态站点仍需既有部署提供请求转发，hash 路由不会带上 `Vite` 开发代理，本轮不改部署。
 
 可在启动前用无秘密环境变量改地址：
 
@@ -61,13 +65,19 @@ BACKEND_PROXY_TARGET=http://127.0.0.1:8081 FRONTEND_PORT=5401 pnpm dev --host 12
 1. 先启动本次 Python 后端，再启动 Vite。打开页面和浏览器 Network，确认初始是“待检测”，没有自动发出 `/health`。
 2. 点击“检测后端连接”。按钮进入请求中并防止重复点击；请求成功后核对 Network 中的相对 `/health`、200、`status: ok` 和 `X-WeKnora-Implementation: python-fastapi`，再对照页面显示。
 3. 只停止本次启动的 Python 进程，保留前端。再次点击，页面应进入失败并给固定诊断，不能保留旧成功结果冒充本次成功。代理失败的响应可能被归为 HTTP 或 protocol；不要把它写成 FastAPI 业务错误。
-4. 重启本次 Python 服务，再点击；页面应恢复成功。本次真实页面验证已观察到成功→停后端代理 HTTP 500→恢复成功；独立 TASK-04 仍未执行。
+4. 重启本次 `Python` 服务，再点击；页面应恢复成功。上一健康子项真实页面验证观察到成功→停后端代理 HTTP 500→恢复成功，历史独立结果见文首报告；本轮导航回归须以本任务正式报告确认。
+5. 在请求未返回时切到 `/#/progress` 或未知页：按合同健康组件卸载并取消在途请求；立即返回 `/#/health` 应为待检测，不展示旧成功或迟到响应。进入页面、窗口聚焦和网络重连都不应自动检测。这里是体验检查步骤，不是本 worker 已执行的测试。
 
 前端成功条件不是只有 HTTP 200：还必须是 JSON、对象 `status` 为 `ok`、身份 header 正确。`fetchHealth` 的固定错误分类为 `network`、`timeout`、`http`、`protocol`；超时阈值为 5000ms。页面不渲染代理返回的 HTML、堆栈或任意原始错误正文。请求取消不伪造成超时或成功。
 
 ## 4. 从点击到页面更新的源码阅读顺序
 
-按实际文件阅读，而不是把静态说明当运行 trace：
+先区分两条链；以下路由位置来自本轮冻结合同，不为并行新增源码编造行号，实际实现由主线程集成核对：
+
+- 页面导航：`src/layouts/WorkbenchLayout.vue` 的 `RouterLink` → `src/router/index.ts` 的 `createRouter` / `createWebHashHistory(import.meta.env.BASE_URL)` 匹配 hash → `src/App.vue` 的 `RouterView` 渲染页面；`src/main.ts` 在挂载前注册 router，并保留原有插件。外壳只有一个 `main`，每页一个 `h1`；两条导航有精确当前项与键盘焦点。
+- 请求检测：健康页内主动点击 → `onCheckClick()` → `check()` → `query.refetch()` → `fetchHealth()` → `Vite` HTTP `/health` 代理 → `FastAPI`。页面导航不是 `fetch`，`RouterView` 不是后端 HTTP 路由。
+
+按实际文件阅读健康链，而不是把静态说明当运行 `trace`：
 
 1. `src/views/health/components/HealthPanel.vue` 的 `onCheckClick()` 接收按钮事件并调用 `check()`。
 2. `src/views/health/hooks/useHealthCheck.ts` 的 `useHealthCheck()` 建立禁用自动请求的 query，`check()` 主动 `refetch`，以 `idle/checking/success/failure` 映射页面状态并保护并发点击。
@@ -75,10 +85,14 @@ BACKEND_PROXY_TARGET=http://127.0.0.1:8081 FRONTEND_PORT=5401 pnpm dev --host 12
 4. `vite.config.ts` 的 `server.proxy` 只负责开发期转发，不是业务方法，也不记录 trace。
 5. `python/backend/app/main.py` 的 FastAPI `health()` 返回精确 JSON 和身份 header；响应沿代理回到 fetch，再由 query 更新页面模板。
 
-实际定位：`src/views/health/components/HealthPanel.vue:47–49` onCheckClick；`src/views/health/hooks/useHealthCheck.ts:12–67` hook、48–57 check、60–64 取消；`src/api/health.ts:33–74` fetchHealth；`vite.config.ts:10–31` 配置；`src/main.ts:8–9` 插件注册；后端 `app/main.py:15–18` health。详见本任务的 `03-code/learning-guide.md` 和 `api-docs.md`。
+本 worker 已只读核实定位：`src/views/health/components/HealthPanel.vue:47–49` 的 `onCheckClick()`；`src/views/health/hooks/useHealthCheck.ts:12–67` 的 `useHealthCheck()`、`48–57` 的 `check()`、`60–64` 的 `dispose()` / `onScopeDispose(dispose)`；`src/api/health.ts:33–74` 的 `fetchHealth()`（`37–41` 转发取消信号、`45` 发请求、`70–72` 清理）；`vite.config.ts:23–28` 的开发代理。健康目录保持 `src/views/health/components/` 与 `src/views/health/hooks/`，不迁回旧全局目录。
+
+按合同 `RouterView` 不使用 `KeepAlive`：离开健康页触发已有 `dispose()` → `cancelQueries()` → `AbortSignal` → 请求中止；`gcTime: 0` 与新组件局部状态配合，重入为待检测。路由集成后的取消、快速重入和迟到响应行为由本轮正式测试验证。本轮不新增或修改 HTTP API，因此不新增 API 文档任务；上一健康合同文档属于历史任务，不冒充本轮产物。
 
 ## 5. 本轮边界与下一步
 
-刷新页面后回到待检测；没有数据库、localStorage、sessionStorage、JSONL 或 trace 表。健康结果只表示当前 Python HTTP 应用响应，不表示数据库、模型、队列或完整业务可用。上传、解析、检索、问答、SSE 和全量 `/api/v1` 兼容仍未实现。
+刷新或重新进入健康页应回到待检测；没有数据库、`localStorage`、`sessionStorage`、`JSONL` 或 `trace` 表。健康结果只表示当前 `Python` HTTP 应用响应，不表示数据库、模型、队列或完整业务可用。数据库、上传、解析、检索、问答未开始，`SSE` 和全量 `/api/v1` 兼容仍未实现，整个 `S1` 未全量验收。
+
+`/#/progress` 仅展示版本化静态事实：上一健康子项的历史验收、本轮导航范围与结论定位、未开始业务和单需求暂停策略；不读取本机文件或 `workflow-state.json`、不请求 API、不展示整体完成率。页面中的仓库路径需在仓库打开，不当作 `Vite` 能访问的下载链接。本轮只增加导航切片，无后端行为变化。
 
 完成独立审核、测试和知识记录后，主线程会暂停并持久化等待用户继续。下一项应由用户明确继续后，在新的增量任务目录中重新确认，不自动接着实现。

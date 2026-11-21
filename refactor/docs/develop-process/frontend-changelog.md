@@ -4,9 +4,17 @@
 
 ## 1. 当前状态
 
-- 当前已完成模块：`/health` 连接工作台。
-- 当前阶段：仅完成健康检查子集，不代表 `S1` 全量完成。
+- 验证边界：上一健康子项保留历史证据；本轮导航已有单独的独立审查与必要行为测试通过记录，见下方，不混用两轮计数。
+- 本轮范围：共享外壳、服务检测 `/#/health` 与开发进度 `/#/progress` 两页；整个 `S1` 未全量验收。
 - 当前版本：`Unreleased`。
+
+### `2026-11-21`：导航与静态进度切片
+
+- 根入口跳转 `/#/health`，未知 hash 显示未找到、保留错误 URL 并可返回服务检测；浏览器 hash 导航与 HTTP `GET /health` 不同。
+- 保留健康组件、hook 和 API 当前目录；手动检测、在途离开取消、重入待检测及迟到响应隔离由本轮独立测试验证，不以历史健康测试代替。
+- `/#/progress` 仅展示版本化静态事实与报告定位，不读本机状态文件、不请求 API，不是实时服务／工作流状态、完成率或运行 `trace`。
+- 本轮无后端行为变化；数据库、上传、解析、检索、问答未开始，整个 `S1` 未全量验收。每轮一个需求，完成必要审核、测试、知识与讲解后暂停等待用户明确继续。
+- 本轮实际验证：独立 CODE-REVIEW `PASSED`、`P0/P1=0`，唯一 `P2` 报告定位文字已修；TASK-04 本增量重跑 Node `27` 项与浏览器 `25` 组（导航 `13`＋健康 `11`＋真实服务 `1`），全部通过，必要项 failed/blocked 为 `0`；frozen 安装、类型检查／构建通过，未发现生产缺陷。证据：[审查](../../artifacts/weknora-learning-workbench/03-code/code-review-report.md)、[测试](../../artifacts/weknora-learning-workbench/04-e2e/test-report.md)、[用例](../../artifacts/weknora-learning-workbench/04-e2e/added-cases.md)、[学习指南](../../artifacts/weknora-learning-workbench/03-code/learning-guide.md)。本次文档同步未重跑测试；失败恢复为真实浏览器离线／在线，未停后端；取消／迟到响应的受控注入边界见报告。
 
 ## 2. `2026-11-21`：统一开发启动命令
 

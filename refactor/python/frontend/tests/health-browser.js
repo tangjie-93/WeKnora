@@ -1,7 +1,7 @@
 // Playwright CLI: run-code --filename=<absolute path to this file>.
 // Open the CLI session from the workspace root; keep both actual dev servers running.
 async (page) => {
-    const evidenceDir = '/Users/james/Desktop/github/WeKnora/refactor/artifacts/weknora-python-vue3-rebuild/04-e2e/output/playwright';
+    const evidenceDir = '/Users/james/Desktop/github/WeKnora/refactor/artifacts/weknora-learning-workbench/04-e2e/output/playwright';
     const assert = (condition, message) => { if (!condition) throw new Error(message); };
     const passed = [];
     let timeoutMs;
@@ -25,6 +25,11 @@ async (page) => {
     assert(await status.getAttribute('aria-live') === 'polite', 'missing live region');
     passed.push('initial idle; zero automatic health requests; semantic status');
 
+    // Two real navigation links now precede the health action.
+    await page.keyboard.press('Tab');
+    assert(await page.getByRole('navigation').getByRole('link', { name: '服务检测', exact: true }).evaluate(node => node === document.activeElement), 'first Tab did not focus health navigation');
+    await page.keyboard.press('Tab');
+    assert(await page.getByRole('navigation').getByRole('link', { name: '开发进度', exact: true }).evaluate(node => node === document.activeElement), 'second Tab did not focus progress navigation');
     await page.keyboard.press('Tab');
     assert(await button.evaluate(node => node === document.activeElement), 'Tab did not focus check button');
     const responsePromise = page.waitForResponse(response => new URL(response.url()).pathname === '/health');

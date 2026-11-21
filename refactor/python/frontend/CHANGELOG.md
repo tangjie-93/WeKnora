@@ -6,7 +6,17 @@ date: 2026-11-20
 run_mode: auto
 ---
 
-# Vue 前端变更记录
+# `Vue` 前端变更记录
+
+## [Unreleased] - `2026-11-21`：学习工作台导航切片
+
+- 本轮范围：共享外壳与服务检测 `/#/health`、开发进度 `/#/progress` 两页；根入口跳转健康页，未知 hash 显示未找到并可返回。hash 导航不是 HTTP `GET /health`。
+- 健康链保留 `src/views/health/components/HealthPanel.vue`、`src/views/health/hooks/useHealthCheck.ts` 与 `src/api/health.ts`；切离取消、重入待检测与无自动检测已由本轮独立路由回归验证。
+- 进度仅为版本化静态事实，不是实时服务／工作流状态、完成率或运行 `trace`。数据库、上传、解析、检索、问答未开始，整个 `S1` 未全量验收。
+- 本轮无后端行为变化，不修改 HTTP API、代理或部署；交付完成审核、测试、知识记录与讲解后暂停，等待用户明确继续。
+- 本轮实际结论：独立 CODE-REVIEW `PASSED`、`P0/P1=0`，唯一 `P2` 报告定位文字已修正；TASK-04 实跑 Node `27` 项、浏览器 `25` 组（导航 `13`／健康 `11`／真实服务 `1`）均通过，必要项 failed/blocked 为 `0`，frozen 安装与类型检查／构建通过，未发现生产缺陷。证据：[独立审查](../../artifacts/weknora-learning-workbench/03-code/code-review-report.md)、[测试报告](../../artifacts/weknora-learning-workbench/04-e2e/test-report.md)、[测试用例](../../artifacts/weknora-learning-workbench/04-e2e/added-cases.md)、[学习指南](../../artifacts/weknora-learning-workbench/03-code/learning-guide.md)。本次只同步正式记录，不重跑测试；真实失败采用浏览器离线恢复，未停服务，受控注入不当作真实后端故障。
+
+以下保留上一健康子项的历史开发快照与验收记录，数量与结论不适用于本轮导航增量。
 
 ## [Unreleased] - 2026-11-20
 
@@ -20,7 +30,7 @@ run_mode: auto
 
 请求仅为相对 `GET /health`，校验 200、JSON 和 Python 身份 header，防止误连原 Go。默认本机 5400 代理本机 8080，可配置 `FRONTEND_PORT` 与 `BACKEND_PROXY_TARGET`；不改变原工程。没有登录、上传、解析、检索、问答、SSE 或持久化，不声明全量界面或 `/api/v1` 兼容已完成。
 
-### 当前独立验证状态（2026-11-21 同步）
+### 上一健康子项独立验证状态（`2026-11-21` 同步，历史证据）
 
 独立 CODE-REVIEW 已 PASSED（P0/P1/P2 均 0）；TASK-04 已 completed，38 项自动测试（pytest 11 + Node 27）与 11 个浏览器检查组全部 passed，必需行为 failed/blocked 均 0。测试执行日期按正式报告为 2026-11-20（UTC），本次文档同步日期为 2026-11-21；不是重新执行测试。
 

@@ -1,7 +1,9 @@
 // Playwright CLI run-code --filename=<this file> before stop, while stopped, and after restart.
 // Does not stop services: the operator must verify process ownership separately.
 async (page) => {
-    const evidenceDir = '/Users/james/Desktop/github/WeKnora/refactor/artifacts/weknora-python-vue3-rebuild/04-e2e/output/playwright';
+    const evidenceDir = '/Users/james/Desktop/github/WeKnora/refactor/artifacts/weknora-learning-workbench/04-e2e/output/playwright';
+    await page.goto('http://127.0.0.1:5400/#/health');
+    await page.getByRole('button', { name: '检测后端连接' }).waitFor();
     let backendUp = false;
     try {
         const direct = await page.request.get('http://127.0.0.1:8080/health', { timeout: 1500 });
