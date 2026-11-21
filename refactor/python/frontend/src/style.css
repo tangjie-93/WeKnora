@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+@layer base {
+    body {
+        margin: 0;
+        background: #fff;
+        color: #0f172a;
+        font-family: system-ui, sans-serif;
+        line-height: 1.7;
+    }
+
+    code {
+        overflow-wrap: anywhere;
+        font-size: 0.9em;
+    }
+}
