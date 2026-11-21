@@ -2,15 +2,15 @@
 
 仓库：[`tangjie-93/WeKnora`](https://github.com/tangjie-93/WeKnora)。使用 `git clone https://github.com/tangjie-93/WeKnora.git` 克隆。
 
-每次提交 `push`内容到 `github`仓库时，都需要更新 `docs/develop-process/changelog.md` 文件，记录下提交的内容,需要根据路由模块来总结，我想知道我当前项目的开发进度。
+每次提交 `push` 内容到 `GitHub` 仓库时，都需要同步更新 `docs/develop-process/changelog.md` 总览及对应的 `backend-changelog.md` 或 `frontend-changelog.md`，按路由模块总结提交内容和当前项目进度。
 
 ## 项目结构与模块组织
 
 此工作区包含分阶段替换 `WeKnora` 的 `Python` 实现。必须保留现有数据库结构和 `/api/v1` 接口契约。
 
-- `python/backend/app/`：包含 `FastAPI` 路由与数据模式、服务、仓储、领域实体、集成和核心配置。业务逻辑放在服务层，持久化逻辑放在仓储层。
-- `python/backend/tests/`：包含单元测试、`API` 端到端测试、共享测试夹具和契约报告。
-- `python/backend/scripts/`：包含阶段验收、模型配置和本地模拟模型工具。
+- `python/backend/app/`：本轮最小 `FastAPI` 健康入口；后续按需要增加服务、仓储等业务分层。
+- `python/backend/tests/`：由独立测试阶段按需添加健康合同测试，后续扩展测试支持。
+- `python/backend/scripts/`：后续按需建立，当前不提供 `stage_check.py` 或模型工具。
 - `python/frontend/src/`：独立的 `Vue 3` 应用，包含页面、`API` 客户端和样式。
 - `integration-web/src/`：独立的集成界面；其资源和组件应保留在该应用内。
 - `docs/`：包含架构、进度和相关文档。`server-deploy/` 存放部署资源。
@@ -19,13 +19,13 @@
 
 使用 `Python` 的 `3.12+` 版本和虚拟环境。后端命令在 `python/backend/` 目录下执行：
 
-- `python -m pip install -e ".[dev]"`：安装后端及开发依赖。
-- `python -m uvicorn app.main:app --port 8080 --reload`：启动 `API` 服务；通过 `/health` 检查健康状态。
-- `python -m pytest -q`：运行后端测试套件。
-- `python -m ruff check .`：运行已配置的代码静态检查。
-- `python scripts/stage_check.py --stage phase1`：运行阶段验收；选择适用的阶段。各阶段共享数据库和日志文件，因此必须串行执行。
+- `uv sync --frozen --extra dev`：根据 `uv.lock` 同步后端及开发依赖。
+- `uv run --frozen uvicorn app.main:app --host 127.0.0.1 --port 8080 --reload`：启动本机服务；`/health` 仅检查 HTTP 应用存活。
+- `uv run --frozen python -m pytest -q`：独立测试阶段添加测试后运行后端测试套件。
+- `uv run --frozen python -m ruff check app`：检查应用源码；测试到位后可检查 `.`。
+- 当前没有可执行的 `scripts/stage_check.py`；本轮不接数据库或模型。
 
-在任一前端目录中，先运行 `npm install`，再运行 `npm run dev`。`python/frontend` 使用端口 `5400`，并将 `API` 请求代理至端口 `8080`；`integration-web` 使用端口 `8300`。运行 `npm run build` 进行 `TypeScript` 类型检查并生成生产构建产物。
+在 `python/frontend/` 使用 `pnpm install --frozen-lockfile`、`pnpm build`（`vue-tsc --noEmit && vite build`）和 `pnpm dev --host 127.0.0.1`。默认页面端口 `5400`，仅 `/health` 代理到本机 `8080`；可配置 `FRONTEND_PORT` 和 `BACKEND_PROXY_TARGET`，端口冲突时同步配置，不停止不明进程。`integration-web/` 仍使用 `npm install`、`npm run dev` 和 `npm run build`，端口 `8300`，不迁移其资源或依赖。
 
 ## 代码风格与命名规范
 
