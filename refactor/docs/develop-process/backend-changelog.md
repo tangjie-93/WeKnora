@@ -4,9 +4,17 @@
 
 ## 1. 当前状态
 
-- 当前已完成模块：免鉴权 `GET /health`。
-- 当前阶段：仅完成健康检查子集，不代表 `S1` 全量完成。
-- 当前版本：`Unreleased`。
+- 已有独立验收模块：免鉴权 `GET /health`；证据保留在历史章节。
+- 当前仅实现 `S2.2` 显式本地 `SQLite` 连接检查子项，修复后独立复审和必要独立测试通过；整个 `S1`、`S2` 未全量验收。
+- 业务数据、`schema`/迁移、`ORM` 未实现，整个 `S2` 未验收；当前版本为 `Unreleased`。
+
+### 当前增量：`2026-11-21` 连接检查模块
+
+- 从 `python/backend/` 运行 `uv run --frozen python -m app.cli.check_database --path PATH [--create] [--json]`，显式目标、默认只读；创建只占有新文件，不建父目录、不覆盖、不初始化业务表。
+- 首轮 `P1-01` 审查失败后窄修：连接前只读最多 `100` 字节并关闭，仅允许 `rollback`/零字节；持久化 `WAL` 即使无副文件也返回 `invalid_target/3`，不是损坏判定。不改日志模式、不删副文件，修复后独立复审 `PASSED/P0/P1/P2=0`，首轮失败历史保留。
+- 方法边界：`resolve_database_target` 校验目标，`check_database` 固定查询与释放，`build_parser`/`main` 负责独立命令；不修改 `GET /health` 或新增 `HTTP API`。
+- 参数、输出和失败练习见[后端说明](../../python/backend/README.md#6-当前增量显式本地-sqlite-连接检查)。本轮 `TASK-04` 独立新增 `117` 项（资源/函数 `88`、真实 `CLI 29`），全套 `128 passed`（含健康 `11`）；真实关闭无副文件 `WAL 2/2` 回归、Ruff/格式/前端构建/最窄进度导航通过。见[正式测试](../../artifacts/weknora-sqlite-connection/04-e2e/test-report.md)；只同步已执行证据，不重跑或新增前端行为，业务 `schema`/迁移/`ORM` 未验证。
+- 完成本需求审核、测试、知识与讲解后由主线程暂停，等待用户明确继续；未提交或推送。
 
 ## 2. `2026-11-21`：统一开发启动命令
 

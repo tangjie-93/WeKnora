@@ -11,8 +11,8 @@
             <p>历史证据：<code>artifacts/weknora-python-vue3-rebuild/04-e2e/test-report.md</code></p>
         </section>
         <section class="space-y-2" aria-labelledby="navigation-slice-title">
-            <h2 id="navigation-slice-title" class="text-lg font-semibold">本增量：导航与静态进度</h2>
-            <p>本增量范围为共享外壳、服务检测与开发进度两页。验收结论以本任务正式审查和测试记录为准，页面不跟踪执行状态。</p>
+            <h2 id="navigation-slice-title" class="text-lg font-semibold">历史增量：导航与静态进度</h2>
+            <p>历史范围为共享外壳、服务检测与开发进度两页。历史验收结论以对应任务正式审查和测试记录为准，页面不跟踪执行状态。</p>
             <ul class="list-disc space-y-2 pl-5">
                 <li>实现记录：<code>artifacts/weknora-learning-workbench/03-code/change-report.md</code></li>
                 <li>独立审查定位：<code>artifacts/weknora-learning-workbench/03-code/code-review-report.md</code></li>
@@ -22,8 +22,9 @@
         </section>
         <section class="space-y-2" aria-labelledby="scope-title">
             <h2 id="scope-title" class="text-lg font-semibold">边界与变更记录</h2>
-            <p>数据库、上传、解析、检索、问答未开始；整个 S1 未全量验收。本轮无后端行为变化。</p>
-            <p>前端摘要：共享外壳与两个页面；后端摘要：沿用现有 HTTP 健康接口。</p>
+            <p>本轮仅实现 S2.2 显式本地 SQLite 连接检查子项，待独立审查；TASK-04 独立测试 not-run。</p>
+            <p>业务数据、schema/迁移、ORM 未实现；整个 S2 未验收，整个 S1 未全量验收。上传、解析、检索、问答未开始。</p>
+            <p>前端仅同步静态文字；后端新增独立 CLI，不改现有 HTTP 健康接口，不新增数据库 API 或页面连接功能。</p>
             <p>在仓库中打开前端记录：<code>docs/develop-process/frontend-changelog.md</code></p>
             <p>在仓库中打开总记录：<code>docs/develop-process/changelog.md</code></p>
             <p>每轮只实现一个需求，完成验证与讲解后暂停，等待用户明确继续；不自动进入下一功能。</p>

@@ -8,7 +8,15 @@ run_mode: auto
 
 # Python 后端变更记录
 
-## [Unreleased] - 2026-11-20
+## 当前增量：`2026-11-21` 显式本地连接检查
+
+- 仅实现 `S2.2` 显式本地 `SQLite` 连接检查子项，修复后独立复审及必要独立测试通过；独立命令 `uv run --frozen python -m app.cli.check_database --path PATH [--create] [--json]` 从 `python/backend/` 运行，合同与练习见 [README 第 `6` 节](./README.md#6-当前增量显式本地-sqlite-连接检查)。
+- 显式目标，无环境回退；默认只读现存独立普通文件，显式创建不建父目录、不覆盖。固定查询后关闭资源，不读取业务数据。
+- 不修改 `GET /health` 或新增 `HTTP API`。业务数据、`schema`/迁移、`ORM` 未实现，整个 `S2` 未验收。
+- 首轮独立审查 `FAILED/P1-01`：无副文件的持久化 `WAL` 仍可能产生副文件；按复核方案窄修为连接前最多只读 `100` 字节并关闭，只支持 `rollback`/零字节，持久化 `WAL` 或未知版本以 `invalid_target/3` 拒绝，不等于文件损坏。不改日志模式、不删副文件；修复后原审核者复审 `PASSED/P0/P1/P2=0`，首轮失败历史保留。
+- 本轮 `TASK-04` 独立新增 `117` 项（资源/函数 `88`、真实 `CLI 29`），全套 `128 passed`（含健康 `11`）；真实正常关闭无副文件的 `WAL 2/2` 拒绝且快照不变，Ruff/格式/前端构建/最窄进度导航通过。见[正式测试](../../artifacts/weknora-sqlite-connection/04-e2e/test-report.md)；仅同步证据、不重跑或新增前端行为，业务 `schema`/迁移/`ORM` 未验证。完成本需求验证与讲解后暂停等待明确继续，未提交或推送。
+
+## 历史增量：[Unreleased] - 2026-11-20
 
 ### Added — `GET /health` 模块
 

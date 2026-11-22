@@ -2,3 +2,9 @@
 .venv
 *.egg-info
 .ruff_cache
+*.db
+*.sqlite
+*.sqlite3
+*-wal
+*-shm
+*-journal
