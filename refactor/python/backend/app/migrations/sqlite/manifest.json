@@ -1,0 +1,55 @@
+{
+  "profile": "auth-sqlite-prefix-v7",
+  "source_revision": "a0c68744e92fe15c2ea1b84ba2ed1ffa79642955",
+  "coverage": "Complete original SQLite up migrations 0 through 7; not full production schema",
+  "migrations": [
+    {
+      "version": 0,
+      "file": "000000_init.up.sql",
+      "source_path": "/Users/james/Desktop/github/WeKnora/migrations/sqlite/000000_init.up.sql",
+      "sha256": "57597ca2cc42742dc39ed923ac032e0c128f5ecfd990120a0c8c95e618e8e2c9"
+    },
+    {
+      "version": 1,
+      "file": "000001_remove_wiki_log.up.sql",
+      "source_path": "/Users/james/Desktop/github/WeKnora/migrations/sqlite/000001_remove_wiki_log.up.sql",
+      "sha256": "251798a1e630bef789780d94a66a7244ba7f538dbf5ee14b22ccf74c92f23ee8"
+    },
+    {
+      "version": 2,
+      "file": "000002_knowledge_folder_path.up.sql",
+      "source_path": "/Users/james/Desktop/github/WeKnora/migrations/sqlite/000002_knowledge_folder_path.up.sql",
+      "sha256": "79db4c6c3050e90dfa02606c62d0249af6f8d330c628fc1af43169068d5ae75e"
+    },
+    {
+      "version": 3,
+      "file": "000003_knowledge_base_auto_tag_config.up.sql",
+      "source_path": "/Users/james/Desktop/github/WeKnora/migrations/sqlite/000003_knowledge_base_auto_tag_config.up.sql",
+      "sha256": "8adf60ae347c2568031885303e4704b06594ae61d3ff8e4329f1463fe669f075"
+    },
+    {
+      "version": 4,
+      "file": "000004_memory.up.sql",
+      "source_path": "/Users/james/Desktop/github/WeKnora/migrations/sqlite/000004_memory.up.sql",
+      "sha256": "f782a241012fdec21743b194c3a0ab6db8d6e1a0304779c38664ce4d6d1b2ff8"
+    },
+    {
+      "version": 5,
+      "file": "000005_messages_attachments_and_invitation_fields.up.sql",
+      "source_path": "/Users/james/Desktop/github/WeKnora/migrations/sqlite/000005_messages_attachments_and_invitation_fields.up.sql",
+      "sha256": "f0cc24aa80dd4b2c0654c186cf0e0ad5ccca65541ee3a035488a9e2e0304cbb0"
+    },
+    {
+      "version": 6,
+      "file": "000006_task_queue_and_dead_letters.up.sql",
+      "source_path": "/Users/james/Desktop/github/WeKnora/migrations/sqlite/000006_task_queue_and_dead_letters.up.sql",
+      "sha256": "bdb930e6b3f46404f93c3a1f06760d81610d32b9b57844098f1ee2c29e3f839b"
+    },
+    {
+      "version": 7,
+      "file": "000007_system_admin_and_settings.up.sql",
+      "source_path": "/Users/james/Desktop/github/WeKnora/migrations/sqlite/000007_system_admin_and_settings.up.sql",
+      "sha256": "860d0b4503d6a99d8c683c8008bdd7e27a1bfb013a53070d2d39aef19972181d"
+    }
+  ]
+}

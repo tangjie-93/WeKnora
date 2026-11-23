@@ -1,12 +1,23 @@
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
-import { VueQueryPlugin } from '@tanstack/vue-query';
+import { QueryClient, VueQueryPlugin } from '@tanstack/vue-query';
+import ElementPlus from 'element-plus';
+import 'element-plus/dist/index.css';
+import { useSessionStore } from './stores/session';
+import { configureSessionRuntime } from './hooks/useSession';
+import { installSessionGuards } from './router';
 import App from './App.vue';
 import router from './router';
 import './style.css';
 
 const app = createApp(App);
-app.use(createPinia());
-app.use(VueQueryPlugin);
+const pinia = createPinia();
+const queryClient = new QueryClient();
+app.use(pinia);
+app.use(ElementPlus);
+app.use(VueQueryPlugin, { queryClient });
+useSessionStore(pinia).restoreCredentials();
+configureSessionRuntime({ queryClient, router });
+installSessionGuards(router, pinia);
 app.use(router);
 app.mount('#app');

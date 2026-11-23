@@ -8,3 +8,5 @@
 *-wal
 *-shm
 *-journal
+.local/
+*.jwt-secret

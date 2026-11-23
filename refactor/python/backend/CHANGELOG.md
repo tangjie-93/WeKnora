@@ -1,14 +1,39 @@
 ---
-task_id: WEKNORA-REBUILD-20261120
+task_id: WEKNORA-PRODUCT-AUTH-20261122
 stage: TASK-03
 author: 开发工程师
-date: 2026-11-20
+date: 2026-11-22
 run_mode: auto
 ---
 
-# Python 后端变更记录
+# `Python` 后端变更记录
 
-## 当前增量：`2026-11-21` 显式本地连接检查
+## 最终正式验证：`2026-11-22`
+
+- 独立复审 `PASSED/P0=0/P1=0/P2=0`；独立 `TASK-04 PASSED/completed`，新增后端 `92`／全套 `220 passed`，新增前端 `14`／全套 `41 passed`，浏览器 `29` 场景组，必需失败／阻塞均 `0`。`CR-001–005`、真实安全启动链、注册事务、身份／轮换／全会话退出和重启恢复独立通过；静态／类型／构建通过，无生产缺陷。
+- [正式测试](../../artifacts/weknora-product-auth/04-e2e/test-report.md)与[新增用例](../../artifacts/weknora-product-auth/04-e2e/added-cases.md)记录两处测试自身问题的修正及既有上游警告；[复审报告](../../artifacts/weknora-product-auth/03-code/code-review-report.md)保留首轮 `FAILED`。本文同步而非重跑；下方“复审未执行／not-run”只属历史。
+- 主产品账户／空间、辅助工作台、五接口及原版 `SQLite 0–7/v7` 认证子集边界不变；带 `--no-proxy-headers` 的分端启动为支持入口，旧统一启动器禁止用于认证。全量迁移、知识库 `CRUD`、生产／`PostgreSQL`／跨浏览器矩阵等仍未验收；主线程收尾暂停，下一需求等待明确继续。
+
+## 历史审查、修复与开发快照
+
+## 审核纠正：`2026-11-22`，修复开发自检已同步、独立复审未执行
+
+- 首轮独立 `CODE-REVIEW FAILED`（`P0=0/P1=3/P2=2`）已否定下方修复前开发自检对遗漏边界的覆盖；保留原 `PASS` 历史，独立复审未执行，`TASK-04 not-run`，不预写通过。
+- `CR-001`：所有受支持后端命令补 `--no-proxy-headers`，按真实连接对端而非 `X-Forwarded-For` 限流；`Vite` 剥除不可信转发头。旧统一 `npm run dev` 未带安全参数且停止端口监听者，不支持认证运行、不要执行。
+- `CR-002`：认证请求非法编码／过深 `JSON` 须统一 `400/1010`，保留健康及非认证框架 `404/405`；需真实字节级证据，不能引用旧合法输入自检代替。
+- `CR-003`：登录已有令牌而首个 `me` 失败，应复用原会话恢复或真实退出，不能要求再次提交密码并遗留会话；实际修复入口已在释放后核对；真实换头限流／代理剥头、原始字节 `14` 项、受控递归 `3` 项、协调者浏览器恢复 `7` 项与最终回归均为修复开发自检通过，非自然深度复现或独立通过。证据集中在[学习指南](../../artifacts/weknora-product-auth/03-code/learning-guide.md)。
+
+## 当前增量：`2026-11-22` 真实账户与个人空间（开发自检快照）
+
+- 主产品交付真实账户／个人空间，工作台仅辅助；冻结五路由为 `POST /api/v1/auth/register`、`POST /api/v1/auth/login`、`POST /api/v1/auth/refresh`、`GET /api/v1/auth/me`、`POST /api/v1/auth/logout`。
+- 注册成功为 `201/user`，不自动登录；用户、个人空间、`owner` 成员同一事务。登录返回 `token/refresh_token`；刷新请求 `refreshToken`，响应 `access_token/refresh_token`；`me` 为 `success/data`，退出撤销用户全部会话。
+- 认证结构采用原版 `SQLite 000000–000007` 八份完整迁移和 `auth-sqlite-prefix-v7` 独立元数据；只覆盖 `v7` 认证基线，不是全量迁移／生产升级或整个 `S2/S3` 验收。知识库、上传、问答、模型配置、空间协作和 `PostgreSQL` 范围外。
+- 显式初始化自有新库和持久 `0600` 侧车秘密；拒绝覆盖或接入旧原版库，不读现有 `.env`。原 `/health` 和独立只读连接检查保持各自边界；分端安全启动及统一启动器会停止 `8080/5400` 端口监听者的警告见[后端说明](./README.md)。
+- 实际源码／行号已只读核对；开发者报告本轮既有 `pytest 128`、`Ruff` 与认证自检 `108` 项通过，协调者真实网络 `13` 项及浏览器／重启自检通过。本文未重跑，开发自检与受控故障证据分列，独立 `CODE-REVIEW/TASK-04` 仍为 `not-run`，不借用历史通过计数。见[学习指南](../../artifacts/weknora-product-auth/03-code/learning-guide.md)与[认证接口文档](../../artifacts/weknora-product-auth/03-code/api-docs.md)。未提交、推送或发布。
+
+以下保留旧增量历史；其中“当前／本轮”仅指相应日期，不代表本轮认证状态。
+
+## 历史增量：`2026-11-21` 显式本地连接检查
 
 - 仅实现 `S2.2` 显式本地 `SQLite` 连接检查子项，修复后独立复审及必要独立测试通过；独立命令 `uv run --frozen python -m app.cli.check_database --path PATH [--create] [--json]` 从 `python/backend/` 运行，合同与练习见 [README 第 `6` 节](./README.md#6-当前增量显式本地-sqlite-连接检查)。
 - 显式目标，无环境回退；默认只读现存独立普通文件，显式创建不建父目录、不覆盖。固定查询后关闭资源，不读取业务数据。

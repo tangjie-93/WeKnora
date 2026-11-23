@@ -1,12 +1,95 @@
 ---
-task_id: WEKNORA-REBUILD-20261120
+task_id: WEKNORA-PRODUCT-AUTH-20261122
 stage: TASK-03
 author: 开发工程师
-date: 2026-11-20
+date: 2026-11-22
 run_mode: auto
 ---
 
-# `Python` 后端：健康接口与显式本地连接检查
+# `Python` 后端：账户、个人空间与辅助诊断
+
+## 当前正式验证结论（`2026-11-22`）
+
+独立复审 **`PASSED`**，未解决 `P0/P1/P2` 均为 `0`；独立 `TASK-04 PASSED/completed`，后端新增 `92` 项、全套 `220 passed`，前端新增 `14` 项、全套 `41 passed`，真实浏览器 `29` 场景组通过，必需 `failed/blocked=0`。`CR-001–005`、注册事务、真实身份、轮换／退出竞态和重启恢复均有独立证据；`Ruff`、类型检查与构建通过，未发现生产缺陷。本文只同步正式报告，没有重跑测试。
+
+证据：[独立复审（含首轮失败全文）](../../artifacts/weknora-product-auth/03-code/code-review-report.md)、[正式测试](../../artifacts/weknora-product-auth/04-e2e/test-report.md)、[新增用例](../../artifacts/weknora-product-auth/04-e2e/added-cases.md)。初轮 `FAILED`、原开发 `PASS` 和下方“复审未执行／not-run”均保留为当时历史，**不代表当前状态**。两处浏览器脚本自身问题及仅测试修正留在正式报告，未掩盖生产缺陷；既有上游弃用警告保留。生产、多实例、`PostgreSQL`、真实模型、未交付知识业务、跨浏览器矩阵与压力基准仍为范围外 `not-run`。
+
+主产品仍是账户／个人空间，工作台辅助；仅五个认证接口和原版 `SQLite 0–7/v7` 结构子集通过，不是知识库 `CRUD`、全量迁移或整个 `S2/S3` 验收。受支持后端启动必须保留 `--no-proxy-headers`，禁止旧统一启动器用于认证。下方初始化／分端命令仍可用于自有新库体验；临时演示地址／进程仅为记录时点，以本次 `owned-services.json` 为准，不承诺持续在线。主线程完成本需求收尾后暂停，下一需求必须由用户明确继续。
+
+## 历史审核与修复过程（以下状态仅属对应时点）
+
+> **当前审核纠正（`2026-11-22`）：** 首轮独立 `CODE-REVIEW` 为 `FAILED`（`P0=0/P1=3/P2=2`），不是下文历史开发自检 `PASS` 可覆盖的结论。`CR-001` 为默认代理头改写对端导致限流绕过，`CR-002` 为非法编码／过深 `JSON` 未统一错误封装，`CR-003` 为首次 `me` 失败缺少现有会话恢复／真实退出入口。修复后已核对实际源码并读取真实换转发头限流、代理剥头、原始字节 `14` 项／受控解析递归 `3` 项证据，协调者浏览器恢复 `7` 项通过，最终回归通过；这些只是修复开发自检，独立复审尚未执行，`TASK-04` 仍为 `not-run`。详见[首轮审查](../../artifacts/weknora-product-auth/03-code/code-review-report.md)。
+>
+> 受支持认证启动命令必须带 `--no-proxy-headers`：限流按真实连接对端而非客户端可伪造的转发身份；经 `Vite` 时对端是本地代理，共享其桶，不是终端用户地址。开发代理同时剥除不可信转发头。现有统一 `npm run dev` 启动器既会停止端口监听者，也未带此安全参数，**不是受支持的认证运行入口，不要运行**；下方所有旧统一启动描述仅为历史。文档中可复制的后端命令已纠正，旧自检证据不因此自动升级为修复后通过。
+
+## 本增量实现与修复前开发自检快照（`2026-11-22`）
+
+`WeKnora` 主产品是注册、登录和真实账户／个人空间；工作台只是辅助模块。已只读核对实际文件、函数行号，并同步开发者／协调者真实自检：后端既有 `pytest 128`、`Ruff` 与认证自检 `108` 项通过；协调者真实网络 `13` 项、浏览器注册登录／`me`／重载／退出、并发刷新与退出故障恢复、后端重启恢复通过。具体证据与受控故障边界见学习指南第 `6` 节；本文作者未重跑。本轮独立 `CODE-REVIEW/TASK-04` 仍为 `not-run`，不把开发自检当独立验收。下方健康、导航和连接检查结论均为历史记录。
+
+### 账户接口与兼容范围
+
+| 接口 | 用途与关键合同 |
+| --- | --- |
+| `POST /api/v1/auth/register` | `{username,email,password}`，成功 `201` 返回 `user`，不发令牌、不自动登录；在同一事务创建用户、个人空间、`owner` 成员 |
+| `POST /api/v1/auth/login` | `{email,password}`，成功返回 `user/active_tenant/memberships/token/refresh_token` |
+| `POST /api/v1/auth/refresh` | 请求字段为 `refreshToken`，响应字段为 `access_token/refresh_token`；旧刷新令牌原子撤销，新令牌对落库才响应 |
+| `GET /api/v1/auth/me` | `Authorization: Bearer <access>`，成功为 `success/data`；核对用户、个人空间与有效成员，不信任客户端自报角色 |
+| `POST /api/v1/auth/logout` | `Bearer` 携带已知访问或刷新令牌；撤销该用户全部会话，不能仅删除浏览器存储 |
+
+数据库采用原版 `SQLite 000000–000007` 的八份完整 `up.sql`，以 `auth-sqlite-prefix-v7` 和独立 `_python_auth_schema` 记录此认证结构基线；**不是全量迁移、生产升级或整个 `S2/S3` 验收**。不删改原迁移，不把原版已有库接入初始化。知识库、上传、问答、模型配置、空间切换／邀请、系统管理、`PostgreSQL` 与生产部署均不在本轮范围。`GET /health` 仍免鉴权，仅证明应用可响应；旧 `check_database` 仍是独立只读诊断，不代替认证初始化。
+
+详细合同见[认证接口文档](../../artifacts/weknora-product-auth/03-code/api-docs.md)，调用链与验证边界见[学习指南](../../artifacts/weknora-product-auth/03-code/learning-guide.md)，阶段事实以[唯一进度入口](../../docs/从0到1重构WeKnora/13-进度与验收记录.md)为准。
+
+### 自有新库与持久签名秘密
+
+以下是供用户执行的步骤，不是本工作者已执行记录。需要 `Python 3.12+` 与 `uv`，从 `refactor/` 开始；只使用自己拥有且非符号链接的目录，不读取或修改现有 `.env`、原版库或用户数据库。
+
+```sh
+cd python/backend
+uv sync --frozen --extra dev
+mkdir -p .local/auth
+uv run --frozen python -m app.cli.init_auth_database --path "$PWD/.local/auth/auth.sqlite3"
+```
+
+目标 `auth.sqlite3` 和 `auth.sqlite3.jwt-secret` 必须都不存在；已有时换自有新文件名，不删除旧文件重跑。命令独占创建库和秘密文件，权限为 `0600`，父目录须自行准备；启动不自动建库、升级或修复旧库。秘密文件持久保存，不打印、不截图、不提交，不用 `cat` 查看；后端重启复用同一秘密，有意轮换后旧令牌失效。
+
+`WEKNORA_AUTH_DB_PATH` 显式指定已初始化库；相对路径锚定后端工程根。默认库就是上面的隔离路径。默认读取 `<库路径>.jwt-secret`，也可通过既有安全配置注入至少 `32` 字节的 `JWT_SECRET`，不要在命令历史或文档写入真实值。无有效库／秘密时认证返回脱敏 `503`，公共 `/health` 不受影响。数据库含身份信息和原结构的明文 `JWT` 记录；库与秘密都不可共享备份或提交。
+
+### 分开启动，只使用已确认空闲端口
+
+先只读检查示例端口是否有监听，出现任何占用就另选端口，不停止未知进程；此检查不保证随后没有竞争，占用时让启动失败并另选端口。
+
+```sh
+lsof -nP -iTCP:18080 -sTCP:LISTEN
+lsof -nP -iTCP:15400 -sTCP:LISTEN
+```
+
+后端终端从 `refactor/` 开始，保持运行：
+
+```sh
+cd python/backend
+WEKNORA_AUTH_DB_PATH="$PWD/.local/auth/auth.sqlite3" uv run --frozen uvicorn app.main:app --no-proxy-headers --host 127.0.0.1 --port 18080
+```
+
+前端另开终端，从 `refactor/` 开始，需 `Node.js >=22.12`、`pnpm 10.11.0`：
+
+```sh
+cd python/frontend
+pnpm install --frozen-lockfile
+FRONTEND_PORT=15400 BACKEND_PROXY_TARGET=http://127.0.0.1:18080 pnpm dev --host 127.0.0.1
+```
+
+打开 `http://127.0.0.1:15400/#/register`，注册后到登录，再进入 `/#/account` 中性加载视图；仅真实 `me` 成功才显示身份与空间。已有令牌首次 `me` 网络／`500/503` 失败时在账户错误区复用原会话“重试读取账户”，不要重新提交密码；持续 `403` 隐藏身份但可点真实退出撤销全部会话。已有凭据访问登录页也回到账户恢复视图；`401` 保留原刷新／清理逻辑。刷新页面恢复，退出调用服务器撤销。完整体验步骤见前端说明。更换端口需同时更换代理目标和浏览器入口；只在自己启动服务的终端用 `Ctrl+C` 停止。
+
+**警告：现有 `python/` 下的 `npm run dev` 不支持认证运行，不要执行。** 现有 `python/scripts/dev.mjs` 会向占用默认 `8080`、`5400` 的监听进程发送 `SIGTERM`，并不是无害的端口检测；后端端口仍固定为 `8080`。本轮不修改启动器，自检只用自有空闲端口分开启动。下方统一启动命令保留为历史，不构成安全默认建议。
+
+### 检查与状态口径
+
+可在后端目录运行 `uv run --frozen python -m ruff check .` 和 `uv run --frozen python -m pytest -q`；命令存在不表示已执行。初始化、真实 `HTTP`、故障回滚、并发轮换、浏览器和重启恢复证据已按来源分列在本轮学习指南第 `6` 节；本文作者未重跑。`Ruff`／构建不是 `API/E2E` 通过，不借用旧任务计数。实际函数与行号已只读核对并集中在指南第 `2` 节，旧健康源码行号仅是当时快照。
+
+## 历史记录范围
+
+下文“当前／本轮”均指其各自历史增量，不覆盖本节 `2026-11-22` 身份业务；旧路由 `/#/health`、`/#/progress` 在本轮改为公开工作台子页的兼容跳转。
 
 当前增量仅实现 `S2.2` 显式本地 `SQLite` 连接检查子项；首轮 `FAILED/P1-01` 经文件头预检窄修后独立复审 `PASSED`，`TASK-04` 新增 `117` 项、全套 `128` 项独立测试通过（含健康 `11` 项）。业务数据、`schema`/迁移、`ORM` 未实现，整个 `S2` 未验收。运行合同和练习见第 `6` 节，前文健康检查记录保留历史证据，不作为本轮验证结论。
 
@@ -34,7 +117,7 @@ uv sync --frozen --extra dev
 
 ### 从 `python/` 根目录同时启动前后端
 
-如果需要同时启动 Python 后端和 Vue 前端，在 `python/` 目录执行：
+历史统一入口曾在 `python/` 使用下列命令；当前认证不支持，**不要执行**，改用上方带 `--no-proxy-headers` 的分端命令：
 
 ```sh
 npm run dev
@@ -45,7 +128,7 @@ npm run dev
 保持后端终端运行：
 
 ```sh
-uv run --frozen uvicorn app.main:app --host 127.0.0.1 --port 8080 --reload
+uv run --frozen uvicorn app.main:app --no-proxy-headers --host 127.0.0.1 --port 8080 --reload
 ```
 
 在另一个验证终端执行：
@@ -93,7 +176,7 @@ uv run --frozen python -m ruff check .
 如果 8080 被占用，不杀不明进程，也不要把旧 Go `/health` 当成本轮成功。选择已确认空闲的端口，例如：
 
 ```sh
-uv run --frozen uvicorn app.main:app --host 127.0.0.1 --port 8081 --reload
+uv run --frozen uvicorn app.main:app --no-proxy-headers --host 127.0.0.1 --port 8081 --reload
 ```
 
 同时在前端目录以 `BACKEND_PROXY_TARGET=http://127.0.0.1:8081 pnpm dev --host 127.0.0.1` 启动或重启开发服务器。前端端口冲突时使用 `FRONTEND_PORT=5401`，页面入口同步改为 `http://127.0.0.1:5401`；Vite 的 `strictPort` 不会悄悄换端口。

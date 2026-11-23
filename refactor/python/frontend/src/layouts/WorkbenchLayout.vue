@@ -1,42 +1,39 @@
 <template>
-    <div class="workbench-layout mx-auto max-w-3xl px-5 py-8 sm:px-8">
-        <header class="space-y-4 border-b border-slate-200 pb-6">
-            <p class="text-xl font-semibold">WeKnora 学习工作台</p>
-            <p class="text-sm text-slate-600">Python / Vue 重构 · 每轮一个需求，验证与讲解后暂停。</p>
-            <nav class="flex flex-wrap gap-3" aria-label="工作台导航">
-                <RouterLink class="workbench-layout__link" to="/health" exact-active-class="workbench-layout__link--current">服务检测</RouterLink>
-                <RouterLink class="workbench-layout__link" to="/progress" exact-active-class="workbench-layout__link--current">开发进度</RouterLink>
-            </nav>
-        </header>
-        <main class="min-w-0 py-8">
-            <slot />
-        </main>
-    </div>
+    <ProductLayout v-if="session.accessToken && !session.pendingLogout"><RouterView /></ProductLayout>
+    <AuthLayout v-else>
+        <div class="workbench-layout">
+            <AppPageHeader eyebrow="辅助模块" title="工作台" description="服务检测与版本进度，不代替产品业务。" />
+            <el-menu mode="horizontal" :default-active="route.path" @select="navigate">
+                <el-menu-item index="/workbench/health">服务检测</el-menu-item>
+                <el-menu-item index="/workbench/progress">开发进度</el-menu-item>
+            </el-menu>
+            <el-card class="workbench-layout__card" shadow="never"><RouterView /></el-card>
+        </div>
+    </AuthLayout>
 </template>
 
 <script setup lang="ts">
-import { RouterLink } from 'vue-router';
+import { RouterView, useRoute, useRouter } from 'vue-router';
+import AppPageHeader from '../components/layout/AppPageHeader.vue';
+import AuthLayout from '../components/layout/AuthLayout.vue';
+import ProductLayout from './ProductLayout.vue';
+import { useSessionStore } from '../stores/session';
+
+const route = useRoute();
+const router = useRouter();
+const session = useSessionStore();
+
+/** 根据工作台菜单切换辅助页面。 */
+async function navigate(path: string): Promise<void> {
+    await router.push(path);
+}
 </script>
 
-<style scoped>
+<style scoped lang="less">
 .workbench-layout {
-    & .workbench-layout__link {
-        border: 1px solid #64748b;
-        border-radius: 0.375rem;
-        padding: 0.5rem 1rem;
+    width: min(100%, 960px);
 
-        &.workbench-layout__link--current {
-            border-color: currentColor;
-            background: #f1f5f9;
-            font-weight: 700;
-            text-decoration: underline;
-            text-underline-offset: 0.25em;
-        }
-
-        &:focus-visible {
-            outline: 2px solid currentColor;
-            outline-offset: 4px;
-        }
-    }
+    &__card { margin-top: 12px; }
+    & :deep(.el-card__body) { padding: 18px; }
 }
 </style>

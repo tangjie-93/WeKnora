@@ -1,12 +1,36 @@
 ---
-task_id: WEKNORA-REBUILD-20261120
+task_id: WEKNORA-PRODUCT-AUTH-20261122
 stage: TASK-03
 author: 开发工程师
-date: 2026-11-20
+date: 2026-11-22
 run_mode: auto
 ---
 
 # `Vue` 前端变更记录
+
+## 最终正式验证：`2026-11-22`
+
+- 独立复审 `PASSED/P0=0/P1=0/P2=0`；独立 `TASK-04 PASSED/completed`，新增前端 `14`／全套 `41 passed`，浏览器 `29` 场景组；后端新增 `92`／全套 `220 passed`，必需失败／阻塞为 `0`，静态／类型／构建通过，无生产缺陷。
+- 真实账户旅程、首次 `me` 失败恢复／`403` 退出、`CR-001–005`、响应式／键盘、单次刷新、迟到响应／用户隔离、待撤销重载重试与后端重启已独立回归。[正式测试](../../artifacts/weknora-product-auth/04-e2e/test-report.md)、[新增用例](../../artifacts/weknora-product-auth/04-e2e/added-cases.md)保留两处测试自身问题与修正、上游警告；[复审](../../artifacts/weknora-product-auth/03-code/code-review-report.md)保留首轮失败。
+- 本文不重跑测试，下方开发 `PASS`、首轮 `FAILED` 与“独立未执行”均为历史，不覆盖当前结论。主产品账户／空间、辅助工作台、五接口与 `v7` 认证结构子集边界不变；安全启动保留 `--no-proxy-headers`，旧统一入口不支持认证。无知识库 `CRUD`、全量迁移或生产／`PostgreSQL`／跨浏览器矩阵通过声明；收尾后暂停等待用户明确继续。
+
+## 历史审查、修复与开发快照
+
+## 审核纠正：`2026-11-22`，修复开发自检已同步、独立复审未执行
+
+- 首轮独立 `CODE-REVIEW FAILED`（`P0=0/P1=3/P2=2`），保留下方原开发自检 `PASS` 为修复前快照；独立复审未执行，`TASK-04 not-run`。
+- `CR-001`：`Vite` 剥除不可信转发头，后端受支持命令均带 `--no-proxy-headers`，经代理按实际代理对端共享限流桶。旧统一 `npm run dev` 无安全参数且会停止监听者，不支持认证运行、不要执行。
+- `CR-003`：已有令牌首次 `me` 失败时提供原会话恢复／真实退出，不把重新登录当恢复；`401` 仍清理、`403` 仍隐藏身份且可退出。`CR-002` 的认证原始字节／深度错误同步统一封装，实际恢复／代理源码已核对，协调者恢复浏览器 `7` 项、真实换头限流／剥头、原始字节 `14` 项／受控递归 `3` 项及最终回归开发自检通过，来源与限制见[学习指南](../../artifacts/weknora-product-auth/03-code/learning-guide.md)。
+
+## `Unreleased` — `2026-11-22`：账户与空间主产品（开发自检快照）
+
+- 产品主入口改为真实注册、登录与受保护 `/#/account`；工作台仅一个辅助模块，包含公共 `/#/workbench/health`、`/#/workbench/progress`。旧 `/#/health`、`/#/progress` 兼容跳转，未知地址可恢复，不再用教学长文或假知识库卡片占据首页。
+- 使用 `POST /api/v1/auth/register`、`POST /api/v1/auth/login`、`POST /api/v1/auth/refresh`、`GET /api/v1/auth/me`、`POST /api/v1/auth/logout`。注册后回登录、不自动登录；刷新请求 `refreshToken` 与响应 `access_token/refresh_token` 保持原字段，账户数据仅来自 `me.data`。
+- `Pinia` 管会话凭据与 `epoch`，`vue-query` 管唯一身份数据；本标签 `sessionStorage` 恢复、单次共享刷新、退出待撤销重试和迟到响应隔离已按实际源码只读核对。`Vite` 同源开发代理增加 `/api/v1`，保留精确健康代理与手动检测／切离取消行为。
+- 后端为原版 `SQLite 000000–000007` 完整前缀的 `v7` 认证结构子集，不是全量迁移或整个 `S2/S3` 验收；知识库、上传、问答、模型配置和多空间协作未交付。初始化／持久秘密／自有空闲端口／统一启动器停止端口监听者的警告见[前端说明](./README.md)。
+- 状态：实际源码／行号已只读核对；开发者本轮 `pnpm build`／既有 `Node 27` 项通过，协调者真实浏览器核心旅程、桌面／移动／键盘、并发刷新、迟到隔离和退出故障恢复自检通过；受控客户端 `6` 项／存储 `7` 项另列。本文未重跑；本轮独立 `CODE-REVIEW/TASK-04` 仍为 `not-run`，历史构建／浏览器计数不得代替本轮。见[学习指南](../../artifacts/weknora-product-auth/03-code/learning-guide.md)与[认证接口文档](../../artifacts/weknora-product-auth/03-code/api-docs.md)。未提交、推送或发布。
+
+以下保留旧增量历史；旧根跳健康页、仅健康代理和无会话存储等内容仅代表相应日期。
 
 ## [Unreleased] - `2026-11-21`：学习工作台导航切片
 
