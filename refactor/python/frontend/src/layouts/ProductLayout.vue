@@ -11,7 +11,11 @@
                 </el-menu-item>
                 <el-menu-item index="/workbench/health">
                     <span class="product-layout__menu-icon" aria-hidden="true">◈</span>
-                    <span>工作台</span>
+                    <span>服务检测</span>
+                </el-menu-item>
+                <el-menu-item index="/workbench/progress">
+                    <span class="product-layout__menu-icon" aria-hidden="true">▤</span>
+                    <span>开发进度</span>
                 </el-menu-item>
             </el-menu>
             <div class="product-layout__aside-footer">WeKnora<br><span>Personal workspace</span></div>
@@ -44,7 +48,7 @@ const router = useRouter();
 const { account } = useCurrentAccount();
 const { signOut, isLoggingOut } = useSession();
 const mainContent = ref<HTMLElement | null>(null);
-const activeMenu = computed(() => route.path.startsWith('/workbench') ? '/workbench/health' : '/account');
+const activeMenu = computed(() => route.path.startsWith('/workbench/progress') ? '/workbench/progress' : route.path.startsWith('/workbench') ? '/workbench/health' : '/account');
 
 /** 将键盘焦点移至独立滚动的主内容区域。 */
 function focusMainContent(): void {

@@ -51,7 +51,7 @@ async function onCheckClick(): Promise<void> {
     gap: 12px;
 
     &__actions { display: flex; align-items: center; gap: 10px; }
-    &__source { display: grid; gap: 6px; margin: 0; padding-left: 20px; color: var(--el-text-color-secondary); font-size: 12px; line-height: 1.5; }
+    &__source { display: grid; gap: 6px; margin: 0; padding-left: 18px; color: var(--el-text-color-secondary); font-size: 12px; line-height: 1.5; }
     & :deep(.el-alert__content) { line-height: 1.5; }
 }
 </style>

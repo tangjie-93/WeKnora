@@ -9,10 +9,13 @@
 import { RouterLink } from 'vue-router';
 </script>
 
-<style scoped>
+<style scoped lang="less">
 .not-found-page {
-    max-width: 900px; margin: auto; padding: 36px 16px;
-    & .not-found-page__panel { margin-top: 60px; padding: 36px; }
-    & .not-found-page__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+    max-width: 900px;
+    padding: 18px 16px;
+    margin: auto;
+
+    & .not-found-page__panel { padding: 18px; margin-top: 18px; }
+    & .not-found-page__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 18px; }
 }
 </style>
