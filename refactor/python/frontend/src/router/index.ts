@@ -10,6 +10,9 @@ const router = createRouter({
         { path: '/', name: 'home', component: () => import('../views/login/index.vue') },
         { path: '/login', name: 'login', component: () => import('../views/login/index.vue') },
         { path: '/register', name: 'register', component: () => import('../views/register/index.vue') },
+        { path: '/knowledge-bases', component: () => import('../layouts/ProductLayout.vue'), children: [
+            { path: '', name: 'knowledge-bases', component: () => import('../views/knowledge/index.vue'), meta: { requiresAuth: true } },
+        ] },
         { path: '/account', component: () => import('../layouts/ProductLayout.vue'), children: [
             { path: '', name: 'account', component: () => import('../views/account/index.vue'), meta: { requiresAuth: true } },
         ] },
@@ -37,7 +40,7 @@ export function installSessionGuards(target: Router, pinia: Pinia): void {
         if ((to.name === 'login' || to.name === 'register') && session.accessToken && !session.pendingLogout) {
             return { path: '/account', replace: true };
         }
-        document.title = `${to.name === 'account' ? '账户与空间' : to.name === 'login' ? '登录' : to.name === 'register' ? '注册' : '工作台'} · WeKnora`;
+        document.title = `${to.name === 'knowledge-bases' ? '知识库' : to.name === 'account' ? '账户与空间' : to.name === 'login' ? '登录' : to.name === 'register' ? '注册' : '工作台'} · WeKnora`;
         return true;
     });
 }

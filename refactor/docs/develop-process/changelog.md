@@ -1,14 +1,45 @@
 ---
-task_id: WEKNORA-PRODUCT-AUTH-20261122
+task_id: WEKNORA-KNOWLEDGE-BASE-MANAGEMENT-20261124
 stage: TASK-03
 author: 开发工程师
-date: 2026-11-22
+date: 2026-11-24
 run_mode: auto
 ---
 
 # `WeKnora` 开发变更总览
 
-## 当前正式结论（`2026-11-22`）
+## 当前独立验证结论（`2026-11-25`）
+
+空知识库创建／列表独立复审 `PASSED`，当前 `P0/P1/P2=0`；首轮 `FAILED/P1=3` 与 `CR-001–003` 修复历史保留，见[复审第九节](../../artifacts/weknora-knowledge-base-management/03-code/code-review-report.md#9-第一次定向复审与当前结论2026-11-25)。独立 `TASK-04` 测试执行 `passed/completed`：后端新增 `186`／全量 `406=220+186`，前端新增 `42`／全量 `83=41+42`；浏览器业务 `11` 加旧导航 `5` 共 `16` 场景组，不与测试数混加。`Ruff`、类型、私有空 `envDir` 安全等价构建及 `9` 份迁移资产逐字节核验通过，无关键测试阻塞。
+
+[正式测试报告](../../artifacts/weknora-knowledge-base-management/04-e2e/test-report.md)与[用例清单](../../artifacts/weknora-knowledge-base-management/04-e2e/added-cases.md)已提供；报告中的旧未落盘交接语只属历史。本文只同步、不重跑；**主线程最新通知：`TASK-04 leader` 独立质量门禁已 `PASSED`（`9` 项硬门禁、`3` 项软门禁），先前待审核仅属历史；不据此宣称知识沉淀或整个工作流完成。** 下方并行实现、待核对及独立 `not-run` 为开发时点快照；旧认证 `220/41` 非当前全量，开发 `357/537` 仅开发断言。
+
+范围仍仅空库创建／列表、`100` 容量、空模型与不可用引擎，无模型、上传／问答、共享、编辑或删除。独立服务已停止、临时库／配置已清理，日志截图保留；演示地址由协调者另行确认，不猜测在线，不使用默认读 `.env*` 的前端配置。仍只维护既有[唯一进度入口](../从0到1重构WeKnora/13-进度与验收记录.md)，完成必要后续门禁与讲解后暂停等待明确继续。
+
+## 历史开发快照：空知识库创建／真实列表（`2026-11-24`）
+
+本轮范围为个人空间空文档知识库的创建／列表兼容子集，沿用 `Element Plus` 产品壳与真实认证，不是完整 `CRUD` 或整个 `S5`。下方认证正式通过仅属历史；当前依据审核方案与读取时源码同步，组合实现待协调者核对。
+
+| 模块 | 本轮范围 | 本工作者证据 |
+| --- | --- | --- |
+| 后端 `/api/v1/knowledge-bases` | `POST 201/success/data`、`GET 200/success/data[]`，空数组 `[]`、响应 `no-store`；同连接认证、事务写库、存储元数据、真实计数与尽力审计 | 冻结方案已读；最终实现／运行待核对，不冒称接口通过 |
+| 前端 `/#/knowledge-bases` | 受保护真实列表与仅名称／描述创建；会话隔离、产品导航／窄屏菜单、失败恢复 | 读取时路由已有新增入口，新增业务文件仍由并行任务交付；构建／浏览器 `not-run` |
+| 文档与进度 | 双端说明／变更、总览、双端日志与既有唯一进度入口 | 本轮追加说明、保留历史；学习指南完整正文返回协调者待机械落盘，本工作者不写报告类文件 |
+
+### 本轮冻结边界
+
+- 创建仅接受 `name/description/type/embedding_model_id/summary_model_id`，名称去规定首尾空白后非空、最多 `255` 字符，描述原样最多 `4000`，仅文档类型与空模型；未知／重复字段、非法类型／正文、超过 `1 MiB` 正文拒绝 `400/1000`。列表仅单个 `creator`，未知／重复／分页／共享参数拒绝，重复名称允许，不重试写入。
+- 当前空间上限 `100` 个未删除非临时知识库，创建写锁内达到上限 `400/1000`；列表 `LIMIT 101` 超界 `503/1008`，不截断、不伪装空态，仍为数组不是分页对象。创建需 `owner/admin/contributor`，列表另允许 `viewer`，`owner` 非系统管理员；个人置顶读取与真实批量计数不代表内容操作已开放。
+- 空模型真实持久化，引擎 `unavailable/unavailable`；能力开关不等于就绪。存储只读非秘密元数据，失效具体默认不能跳过，校验本租户实例／别名／允许集合，固定 `local/minio/cos/tos/s3/oss/ks3/obs` 回退；无可用租户默认提供方时 `STORAGE_ALLOW_LIST=s3,local` 仍选 `local`。提交前失败回滚，提交后同连接尽力写真实主体 `kb.created`，审计失败不逆转成功。
+- 损坏已存配置或租户默认存储配置的 `JSON`／结构／字段类型为 `500/1007 Knowledge base storage failure`；合法但超子集配置为 `503/1008 Knowledge base configuration is outside supported scope`。合法 `Bearer` 形式、令牌部分 `UTF-8` 超 `4096` 字节，两接口保留 `400/1010 Authentication token is too long`，不回显凭据。
+- 不改原版 `000000–000007` 迁移／清单字节，不读不存在的画像列，不运行新迁移或修改用户旧库；不创建模型、桶、目录、向量集合或任务。不包括详情／编辑／删除／共享／置顶写入、上传／解析／检索／问答、模型平台、接口密钥或全量旧库兼容。
+- 已只读核对当前 `python/scripts/dev.mjs`：默认 `18080/15400`，支持 `BACKEND_PORT/FRONTEND_PORT/BACKEND_PROXY_TARGET`，已带 `--no-proxy-headers` 且能初始化缺失默认库，但仍 `SIGTERM` 目标端口监听者。下方旧端口／缺安全参数论断仅历史；本轮不运行启动器。验证推荐分端、自有临时库、空闲端口，只停止自己创建的进程，不读 `.env`／用户库／秘密、不调用真实或付费模型。
+
+开发运行自检、独立 `CODE-REVIEW`、`TASK-04` 接口与浏览器均为本文快照的 `not-run/待验证`，不借旧通过计数，静态说明不是运行 `trace`。创建超时／取消先刷新核对；成功但重查失败不谎报创建失败。技术依据为[技术方案](../../artifacts/weknora-knowledge-base-management/02-design/tech-design.md)和[执行计划](../../artifacts/weknora-knowledge-base-management/02-design/execution-plan.md)，细节见[后端日志](./backend-changelog.md)、[前端日志](./frontend-changelog.md)和[唯一进度入口](../从0到1重构WeKnora/13-进度与验收记录.md)。完成必要审核、验证与讲解后暂停，等待用户明确继续，不自动进入下一业务。
+
+**前端启动安全补充：** 项目 `vite.config.ts` 的 `loadEnv()` 会读取工程 `.env*`，传端口变量不能禁读；本轮不得用默认 `pnpm dev` 作为禁读环境的验证入口。体验只采用协调者明确提供的自有演示地址，未提供则 `blocked/待提供`，不猜测在线；独立重现需由验证阶段提供私有空目录 `envDir`、不调用项目 `loadEnv` 的临时配置。下方默认命令仅历史，本文不创建或修改配置。
+
+## 历史：认证正式结论（`2026-11-22`）
 
 独立复审 `PASSED/P0=0/P1=0/P2=0`；独立 `TASK-04 PASSED/completed`，后端新增 `92`／全套 `220 passed`，前端新增 `14`／全套 `41 passed`，真实浏览器 `29` 场景组，必需 `failed/blocked=0`，静态／类型／构建通过，无生产缺陷。真实注册、登录、`me`、重载、刷新与全会话退出及 `CR-001–005` 独立回归完成，工作台仍只辅助；原版 `SQLite 0–7/v7` 认证子集不是全量迁移或知识库 `CRUD`。
 

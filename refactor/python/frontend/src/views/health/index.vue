@@ -9,7 +9,3 @@
 import AppPageHeader from '../../components/layout/AppPageHeader.vue';
 import HealthPanel from './components/HealthPanel.vue';
 </script>
-
-<style scoped lang="less">
-.health-page { width: min(100%, 900px); }
-</style>

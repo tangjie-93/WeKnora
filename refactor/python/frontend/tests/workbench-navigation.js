@@ -4,12 +4,12 @@ async (page) => {
     const base = new URL(page.url()).origin;
     const assert = (value, message) => { if (!value) throw new Error(message); };
     const passed = []; const errors = []; const warnings = [];
-    const nav = name => page.getByRole('navigation', { name: '工作台导航' }).getByRole('link', { name, exact: true });
-    const status = () => page.getByRole('status');
+    const nav = name => page.getByRole('menubar').getByRole('menuitem', { name, exact: true });
+    const status = () => page.getByRole('region', { name: '健康检查' });
     const button = () => page.getByRole('button', { name: '检测后端连接', exact: true });
     const idle = async () => {
         await status().filter({ hasText: '待检测' }).waitFor();
-        assert(!(await status().innerText()).includes('响应 JSON'), 'stale health response retained');
+        assert(await status().getByRole('alert').count() === 0, 'stale health response retained');
     };
     const onError = error => errors.push(error.message);
     const onConsole = message => { if (message.type() === 'warning') warnings.push(message.text()); };
@@ -21,11 +21,11 @@ async (page) => {
         await nav('服务检测').focus(); await page.keyboard.press('Tab');
         assert(await nav('开发进度').evaluate(node => node === document.activeElement && node.matches(':focus-visible')), 'navigation Tab focus missing');
         await page.keyboard.press('Enter'); await page.waitForURL('**/#/workbench/progress');
-        assert(await nav('开发进度').getAttribute('aria-current') === 'page', 'wrong active item');
+        assert(await nav('开发进度').evaluate(node => node.classList.contains('is-active')), 'wrong active item');
         await page.goBack(); await page.waitForURL('**/#/workbench/health'); await idle();
         await page.goForward(); await page.waitForURL('**/#/workbench/progress');
         const text = await page.getByRole('main').innerText();
-        for (const phrase of ['版本化静态说明', '不是实时服务或工作流状态', '知识库、上传、解析、检索、问答尚未开放', '等待用户明确继续']) assert(text.includes(phrase), `missing static boundary ${phrase}`);
+        for (const phrase of ['不是实时运行状态', '空知识库创建与真实列表切片已接入，待独立验证', '知识库详情、编辑、删除、共享、模型管理、文档上传、解析、索引、检索、问答和流式响应', '模型未配置，向量引擎不可用']) assert(text.includes(phrase), `missing static boundary ${phrase}`);
         passed.push('N01 product root login; legacy public health; keyboard Tab/Enter and actual history; truthful progress');
         for (const hash of ['health', 'progress', 'task04-missing']) {
             await page.setViewportSize({ width: 375, height: 812 }); await page.goto(`${base}/#/${hash}`);
@@ -33,11 +33,12 @@ async (page) => {
             assert(await page.getByRole('main').count() === 1, 'main not unique');
         }
         passed.push('N02 auxiliary and unknown mobile375 no overflow');
+        await page.setViewportSize({ width: 1440, height: 900 });
         await page.goto(`${base}/#/health`); await idle();
         await button().click(); await status().filter({ hasText: '连接成功' }).waitFor();
         try {
             await page.context().setOffline(true); await button().click(); await status().filter({ hasText: '检测失败' }).waitFor();
-            assert((await status().innerText()).includes('network') && !(await status().innerText()).includes('响应 JSON'), 'offline kept stale success');
+            assert((await status().innerText()).includes('network') && !(await status().innerText()).includes('HTTP 200'), 'offline kept stale success');
         } finally { await page.context().setOffline(false); }
         await button().click(); await status().filter({ hasText: '连接成功' }).waitFor();
         passed.push('N03 actual health/offline/manual retry, no stale success');

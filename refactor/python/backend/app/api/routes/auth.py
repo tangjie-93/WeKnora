@@ -80,7 +80,8 @@ def bearer(request: Request, *, logout=False) -> str:
     return raw
 
 
-def require_identity(request: Request, service: Annotated[AuthService, Depends(get_auth_service)]):
+def requested_tenant_id(request: Request) -> int | None:
+    """Parse the existing optional workspace header without granting authority."""
     tenant_header = request.headers.get("x-tenant-id")
     tenant_id = None
     if tenant_header is not None:
@@ -88,6 +89,11 @@ def require_identity(request: Request, service: Annotated[AuthService, Depends(g
                 int(tenant_header) <= 0):
             raise AuthFailure(400, 1010, "X-Tenant-ID must be a positive integer")
         tenant_id = int(tenant_header)
+    return tenant_id
+
+
+def require_identity(request: Request, service: Annotated[AuthService, Depends(get_auth_service)]):
+    tenant_id = requested_tenant_id(request)
     return service.current_identity(bearer(request), tenant_id)
 
 

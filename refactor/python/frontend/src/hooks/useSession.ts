@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue';
+import { computed, ref, toRaw, watch } from 'vue';
 import { useQuery } from '@tanstack/vue-query';
 import type { QueryFunctionContext } from '@tanstack/vue-query';
 import { ApiError, configureSessionAccess, errorMessage } from '../api/client';
@@ -7,6 +7,8 @@ import { useSessionStore } from '../stores/session';
 import type { CurrentAccount, CurrentAccountView, LoginInput, RegistrationNotice, SessionActions, SessionRuntimeOptions } from '../types/auth';
 
 let runtime: SessionRuntimeOptions | undefined;
+/** 重新装配时释放上次的会话清理观察器，避免重复订阅。 */
+let stopSessionWatch = (): void => {};
 const logoutError = ref('');
 const isLoggingOut = ref(false);
 export const registrationNotice = ref<RegistrationNotice | null>(null);
@@ -16,16 +18,24 @@ function getRuntime(): SessionRuntimeOptions {
     if (!runtime) throw new Error('会话运行时尚未装配。');
     return runtime;
 }
-/** 仅取消并移除auth查询，不影响独立health缓存。 */
+/** 取消并移除身份及知识库查询，不影响独立 health 缓存或其他公共查询。 */
 function clearAuthQueries(): void {
     const { queryClient } = getRuntime();
-    void queryClient.cancelQueries({ queryKey: ['auth'] }).catch(() => undefined);
-    queryClient.removeQueries({ queryKey: ['auth'] });
+    for (const prefix of ['auth', 'knowledge-bases']) {
+        void queryClient.cancelQueries({ queryKey: [prefix] }).catch(() => undefined);
+        queryClient.removeQueries({ queryKey: [prefix] });
+    }
 }
 /** 装配请求会话原语及鉴权失效处理。@param options 已创建的query/router。 */
 export function configureSessionRuntime(options: SessionRuntimeOptions): void {
+    stopSessionWatch();
     runtime = options;
     const store = useSessionStore();
+    // 包括请求刷新安装令牌持久化失败后的失效；同步清除，阻止旧业务缓存短暂显示。
+    stopSessionWatch = watch(() => [store.epoch, store.pendingLogout, !!store.accessToken] as const,
+        (current, previous) => {
+            if (current[0] !== previous[0] || current[1] || !current[2]) clearAuthQueries();
+        }, { flush: 'sync' });
     configureSessionAccess({
         snapshot: store.snapshot,
         install: store.installTokens,
@@ -70,8 +80,12 @@ export function useCurrentAccount(): CurrentAccountView {
     const store = useSessionStore();
     const query = useQuery(computed(() => ({ ...accountOptions(store.epoch),
         enabled: !!store.accessToken && !store.pendingLogout })));
-    const account = computed(() => store.accessToken && !store.pendingLogout && !query.isError.value && !query.isFetching.value
-        ? query.data.value : undefined);
+    const account = computed(() => {
+        if (!store.accessToken || store.pendingLogout || query.isError.value || query.isFetching.value || !query.data.value) return undefined;
+        const cached = getRuntime().queryClient.getQueryData<CurrentAccount>(['auth', 'me', store.epoch]);
+        // observer 尚未切换 epoch 时，旧身份引用不能短暂用于新知识库查询或权限判断。
+        return cached && toRaw(cached) === toRaw(query.data.value) ? query.data.value : undefined;
+    });
     return { query, account };
 }
 /** 登录先切代并清缓存，安装令牌后进入中性账户视图；该页唯一me查询成功才显示身份，失败可复用会话重试或真实退出。@param input 登录字段。@param signal 页面取消信号。@returns 登录成功进入账户加载页；凭据失败抛安全错误，代际变化不导航。 */

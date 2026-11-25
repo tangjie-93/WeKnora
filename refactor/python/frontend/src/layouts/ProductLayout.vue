@@ -3,8 +3,11 @@
         <a class="skip-link" href="#product-content" @click.prevent="focusMainContent">跳至主要内容</a>
         <el-aside class="product-layout__aside" width="232px">
             <div class="product-layout__brand"><AppBrand /></div>
-            <div class="product-layout__nav-label">主导航</div>
             <el-menu :default-active="activeMenu" class="product-layout__menu" @select="navigate">
+                <el-menu-item index="/knowledge-bases">
+                    <span class="product-layout__menu-icon" aria-hidden="true">▣</span>
+                    <span>知识库</span>
+                </el-menu-item>
                 <el-menu-item index="/account">
                     <span class="product-layout__menu-icon" aria-hidden="true">⌂</span>
                     <span>账户与空间</span>
@@ -22,47 +25,76 @@
         </el-aside>
         <el-container class="product-layout__workspace">
             <el-header class="product-layout__header" height="56px">
-                <span>{{ route.path.startsWith('/workbench') ? '辅助工具 / 工作台' : '个人 / 账户与空间' }}</span>
+                <div class="product-layout__header-title">
+                    <el-button class="product-layout__mobile-toggle" aria-label="打开主导航" aria-controls="mobile-navigation" :aria-expanded="isMenuOpen" @click="isMenuOpen = true">菜单</el-button>
+                    <span>{{ headerTitle }}</span>
+                </div>
                 <div class="product-layout__header-actions">
                     <el-text truncated>{{ account?.user.username || '正在确认账户' }}</el-text>
                     <el-button plain size="small" :loading="isLoggingOut" @click="signOut">退出登录</el-button>
                 </div>
             </el-header>
-            <el-main id="product-content" ref="mainContent" class="product-layout__main" tabindex="-1">
+            <el-main id="product-content" class="product-layout__main" tabindex="-1">
                 <el-scrollbar class="product-layout__scrollbar">
-                    <div class="product-layout__content"><RouterView /></div>
+                    <AppContent><RouterView /></AppContent>
                 </el-scrollbar>
             </el-main>
         </el-container>
+        <el-drawer v-model="isMenuOpen" title="主导航" direction="ltr" size="min(300px, 88vw)" @closed="restoreMenuFocus">
+            <nav id="mobile-navigation" class="product-layout__mobile-nav" aria-label="主导航">
+                <RouterLink v-for="item in navigationItems" :key="item.path" :to="item.path" :aria-current="activeMenu === item.path ? 'page' : undefined" @click="isMenuOpen = false">{{ item.label }}</RouterLink>
+                <el-button plain :loading="isLoggingOut" @click="signOutFromMenu">退出登录</el-button>
+            </nav>
+        </el-drawer>
     </el-container>
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { RouterView, useRoute, useRouter } from 'vue-router';
+import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router';
 import AppBrand from '../components/layout/AppBrand.vue';
+import AppContent from '../components/layout/AppContent.vue';
 import { useCurrentAccount, useSession } from '../hooks/useSession';
 
 const route = useRoute();
 const router = useRouter();
 const { account } = useCurrentAccount();
 const { signOut, isLoggingOut } = useSession();
-const mainContent = ref<HTMLElement | null>(null);
-const activeMenu = computed(() => route.path.startsWith('/workbench/progress') ? '/workbench/progress' : route.path.startsWith('/workbench') ? '/workbench/health' : '/account');
+const isMenuOpen = ref(false);
+const navigationItems = [
+    { path: '/knowledge-bases', label: '知识库' },
+    { path: '/account', label: '账户与空间' },
+    { path: '/workbench/health', label: '服务检测' },
+    { path: '/workbench/progress', label: '开发进度' },
+];
+const activeMenu = computed(() => route.path.startsWith('/knowledge-bases') ? '/knowledge-bases' : route.path.startsWith('/workbench/progress') ? '/workbench/progress' : route.path.startsWith('/workbench') ? '/workbench/health' : '/account');
+const headerTitle = computed(() => activeMenu.value === '/knowledge-bases' ? '个人 / 知识库' : activeMenu.value === '/account' ? '个人 / 账户与空间' : activeMenu.value === '/workbench/progress' ? '辅助工具 / 开发进度' : '辅助工具 / 服务检测');
 
 /** 将键盘焦点移至独立滚动的主内容区域。 */
 function focusMainContent(): void {
-    mainContent.value?.focus();
+    document.getElementById('product-content')?.focus();
 }
 
-/** 根据菜单项切换页面，并维持当前会话与布局。 */
+/** 根据菜单项切换页面；成功关闭菜单，失败交由路由处理。@param path 目标路径。 */
 async function navigate(path: string): Promise<void> {
     await router.push(path);
+    closeMenu();
 }
 
-/** 保留 Escape 键处理入口，布局没有额外弹层时不改变页面状态。 */
+/** 关闭移动菜单；抽屉负责焦点圈定与 Escape 键关闭。 */
 function closeMenu(): void {
-    return;
+    isMenuOpen.value = false;
+}
+
+/** 抽屉关闭后恢复菜单按钮焦点，避免键盘焦点落到隐藏内容。 */
+function restoreMenuFocus(): void {
+    document.querySelector<HTMLButtonElement>('.product-layout__mobile-toggle')?.focus();
+}
+
+/** 关闭移动菜单后执行真实退出；撤销结果及失败恢复由现有会话管理维护。 */
+async function signOutFromMenu(): Promise<void> {
+    closeMenu();
+    await signOut();
 }
 </script>
 
@@ -86,15 +118,6 @@ function closeMenu(): void {
         min-height: 40px;
         padding: 0 8px;
         margin-bottom: 26px;
-    }
-
-    &__nav-label {
-        padding: 0 12px 8px;
-        color: var(--el-text-color-secondary);
-        font-size: 11px;
-        font-weight: 600;
-        letter-spacing: .08em;
-        text-transform: uppercase;
     }
 
     &__menu {
@@ -149,6 +172,31 @@ function closeMenu(): void {
         font-size: 13px;
     }
 
+    &__header-title {
+        display: flex;
+        align-items: center;
+        min-width: 0;
+        gap: 8px;
+        overflow-wrap: anywhere;
+    }
+
+    &__mobile-toggle { display: none; }
+
+    &__mobile-nav {
+        display: grid;
+        gap: 10px;
+
+        & a {
+            padding: 12px;
+            border-radius: 8px;
+            color: var(--el-text-color-primary);
+            text-decoration: none;
+
+            &[aria-current='page'] { color: var(--el-color-primary); background: var(--el-color-primary-light-9); }
+            &:focus-visible { outline: 2px solid var(--el-color-primary); outline-offset: 2px; }
+        }
+    }
+
     &__header-actions {
         display: flex;
         align-items: center;
@@ -167,23 +215,15 @@ function closeMenu(): void {
         height: 100%;
     }
 
-    &__content {
-        max-width: 1180px;
-        padding: 18px;
-        margin: 0 auto;
-    }
-
     @media (max-width: 767px) {
         &__aside {
             display: none;
         }
 
+        &__mobile-toggle { display: inline-flex; }
+
         &__header {
             padding: 0 12px;
-        }
-
-        &__content {
-            padding: 12px;
         }
 
         &__header-actions .el-text {

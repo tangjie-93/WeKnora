@@ -43,7 +43,10 @@ async function sendJson(path: string, options: RequestOptions, bearer?: string):
             signal: controller.signal, cache: 'no-store', credentials: 'omit' });
         let data: unknown;
         try { data = await response.json(); }
-        catch { throw new ApiError(httpMessage(response.status, 0), response.status, 0, 'contract'); }
+        catch {
+            if (controller.signal.aborted) throw new ApiError(timedOut ? '请求超时，请重试。' : '请求已取消。', 0, 0, timedOut ? 'timeout' : 'cancelled');
+            throw new ApiError(httpMessage(response.status, 0), response.status, 0, 'contract');
+        }
         if (!response.ok) {
             const code = isRecord(data) && isRecord(data.error) && typeof data.error.code === 'number' ? data.error.code : 0;
             throw new ApiError(httpMessage(response.status, code), response.status, code);
@@ -102,7 +105,7 @@ export async function requestJson(path: string, options: RequestOptions = {}): P
                 throw retryError;
             }
         }
-        if (initial && sessionAccess?.snapshot()?.epoch !== initial.epoch) throw new ApiError('会话已变更。', 0, 0, 'cancelled');
+        if (controller.signal.aborted || (initial && sessionAccess?.snapshot()?.epoch !== initial.epoch)) throw new ApiError('会话已变更或请求已取消。', 0, 0, 'cancelled');
         return result;
     } finally { signals.forEach(signal => signal.removeEventListener('abort', abort)); }
 }

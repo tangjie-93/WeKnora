@@ -1,14 +1,65 @@
 ---
-task_id: WEKNORA-PRODUCT-AUTH-20261122
+task_id: WEKNORA-KNOWLEDGE-BASE-MANAGEMENT-20261124
 stage: TASK-03
 author: 开发工程师
-date: 2026-11-22
+date: 2026-11-24
 run_mode: auto
 ---
 
 # `Python` 后端：账户、个人空间与辅助诊断
 
-## 当前正式验证结论（`2026-11-22`）
+## 当前独立验证结论（`2026-11-25`）
+
+本轮空知识库创建／列表的独立复审为 `PASSED`，当前 `P0/P1/P2=0`；首轮 `FAILED/P1=3` 与修复历史完整保留，`CR-001–003` 分别闭合可空创建者投影、合法扩展／损坏配置分类及嵌套默认存储类型校验，见[复审第九节](../../artifacts/weknora-knowledge-base-management/03-code/code-review-report.md#9-第一次定向复审与当前结论2026-11-25)。
+
+独立 `TASK-04` 测试执行 `passed/completed`：后端新增 `186`、全量 `406=220+186`；前端新增 `42`、全量 `83=41+42`；真实浏览器业务 `11` 加旧导航 `5`，共 `16` 场景组，组数不与测试数相加。`Ruff`、类型检查、使用私有空 `envDir` 的安全等价构建及 `9` 份迁移资产逐字节核验通过，无关键测试阻塞。证据为[正式测试报告](../../artifacts/weknora-knowledge-base-management/04-e2e/test-report.md)与[用例清单](../../artifacts/weknora-knowledge-base-management/04-e2e/added-cases.md)；报告已实际提供，其中历史交接文字不代表当前仍未落盘。本文只同步证据，不重跑命令。**主线程最新通知：`TASK-04 leader` 独立质量门禁已 `PASSED`（`9` 项硬门禁、`3` 项软门禁）；先前待审核为历史，不再代表当前状态。本文不据此宣称知识沉淀或整个工作流已完成。**
+
+下方 `2026-11-24` 的并行交付、待核对和独立 `not-run` 均为当时快照，不覆盖当前结果；旧认证 `220/41` 不是当前全量，开发 `357/537` 仅为开发断言，不作独立测试计数。范围仍仅空库创建／列表：`100` 容量、空模型、引擎不可用，不开放模型、上传／问答、共享、编辑或删除。独立临时服务已停止、临时库／配置已清理，日志截图保留；体验地址须由协调者另行确认，不能复用已清理路径或宣称持续在线。默认 `Vite loadEnv` 的禁读风险仍按下方安全补充处理。
+
+## 历史开发快照：空知识库创建与列表（`2026-11-24`）
+
+本轮只增加当前个人空间的空文档知识库创建与真实列表，是原版 `/api/v1` 的明确兼容子集，不是完整 `CRUD` 或整个 `S5`。下方认证独立通过属于 `2026-11-22` 历史，不能作为本轮证据。本文依据已审核的本任务技术方案与读取时源码同步；知识库实现由并行任务交付，最终组合源码待协调者核对。本文未执行测试、服务、启动器或浏览器；本轮开发运行自检、独立 `CODE-REVIEW`、`TASK-04` 接口／浏览器验证均为 `not-run/待验证`。
+
+### 1. 接口与输入边界
+
+- `POST /api/v1/knowledge-bases`：成功 `201 {success:true,data:KnowledgeBaseView}`；真实 `owner/admin/contributor` 成员可创建。`GET` 同路径：成功 `200 {success:true,data:KnowledgeBaseView[]}`，空列表为 `[]`，额外允许 `viewer`；所有新接口响应为 `Cache-Control:no-store`。`owner` 不是系统管理员，`X-Tenant-ID` 只能核对真实空间，不能切换授权。
+- 创建仅接受 `name/description/type/embedding_model_id/summary_model_id`：名称按 `Go strings.TrimSpace` 对应空白集合去两端空白后非空、最多 `255` 字符；描述默认 `""`，原样保存、最多 `4000` 字符；类型只接受省略、`""` 或 `document`；两个模型字段只接受省略或 `""`，不接受 `null` 或非空值。表单仅展示名称和描述。
+- 严格拒绝额外字段、重复键、错误类型、非法编码、非对象、尾随内容、过深结构、非 `application/json` 和超过 `1 MiB` 正文，返回 `400/1000`，不是认证正文的 `413/1010`。配置、绑定、租户、创建者、计数和画像字段即使为空也不可输入；重复名称允许，不自动重试创建。
+- 列表仅接受单个可选 `creator`：去空白并转小写后，`mine/others` 匹配当前用户／其他非空创建者；其他单个值不筛选。未知／重复参数、分页及共享参数均拒绝为 `400/1000`。只读同租户、未删除、非临时记录；个人置顶优先，再按置顶时间、创建时间和标识稳定降序，不提供置顶写入。
+- 当前空间最多 `100` 条可见记录：创建在 `BEGIN IMMEDIATE` 写锁内检查，已达上限为 `400/1000 Knowledge base limit reached`；列表以 `LIMIT 101` 探测，超过上限为 `503/1008 Knowledge base list exceeds supported capacity`，绝不静默截断。原版普通列表无分页，本轮保持数组封装，不是假分页。
+
+### 2. 真实持久化、配置与副作用
+
+认证令牌、用户、空间、成员和业务共用单连接／一致事务；服务端生成标识、租户、创建者与时间。空模型真实写库，不创建模型；分块配置明确写零值 `chunk_size=0/chunk_overlap=0/separators=null`，不误用迁移默认值。响应 `capabilities` 的 `vector/keyword=true` 只是配置开关，实际引擎为 `vector_store_source/status=unavailable/unavailable`，不是可上传、检索或问答。计数来自有界批量聚合，画像配置为 `null`，不查询当前前缀不存在的画像列。
+
+存储只读默认提供方与实例非秘密元数据，不读整个凭据配置，不探测远端。具体默认实例优先且必须同租户、未删除、有效、提供方允许；失效默认不能跳过。无具体默认时按提供方解析租户兼容别名，无别名可不绑定实例。`STORAGE_ALLOW_LIST` 是允许集合，回退顺序固定为 `local → minio → cos → tos → s3 → oss → ks3 → obs`，不按环境文本顺序；无可用租户默认提供方时，`STORAGE_ALLOW_LIST=s3,local` 仍选 `local`。不创建桶、目录、向量集合或任务。
+
+创建提交后在同一连接尽力追加真实主体的 `kb.created` 审计；审计失败不逆转已提交成功，提交前失败回滚。原版 `SQLite 000000–000007` 和迁移清单字节保持不变，不运行新 `DDL`、不初始化或升级用户旧库，不新增依赖。既有认证五接口、公共 `/health`、框架 `404/405/Allow` 保持各自合同。
+
+### 3. 错误与恢复
+
+| 场景 | 冻结结果与恢复 |
+| --- | --- |
+| 无效／过期／撤销令牌；角色或空间越权 | `401/1001`；`403/1002`。先恢复真实身份，不把权限失败显示为空列表 |
+| 合法 `Bearer <token>` 形式，令牌部分 `UTF-8` 超过 `4096` 字节 | 两接口均保留 `400/1010 Authentication token is too long`，不回显令牌；非法租户头也保留 `400/1010` |
+| 已存配置或租户默认存储配置的非法 `JSON`、结构／字段类型损坏 | `500/1007 Knowledge base storage failure`；不当未配置、不改写旧记录 |
+| 可解析且结构／字段类型合法，但配置超出本轮子集 | `503/1008 Knowledge base configuration is outside supported scope`；不与损坏配置混用，不自动清空模型 |
+| 无有效基线、忙锁或不可打开 | `503/1008`；只检查自己拥有的临时环境，不接用户旧库修复 |
+| 创建超时／断线／取消，或创建成功但重查失败 | 写入可能已提交；先刷新原空间列表核对，重查失败不等于创建失败，不自动再发 `POST` |
+
+错误统一为 `success:false/error:{code,message,details:null}`，不输出正文、路径、`SQL` 或秘密。审计成功也不替代独立验收。
+
+### 4. 当前启动器与安全体验
+
+已只读核对 `python/scripts/dev.mjs`：当前默认后端 `18080`、前端 `15400`；支持 `BACKEND_PORT/FRONTEND_PORT/BACKEND_PROXY_TARGET` 覆盖，后端已带 `--no-proxy-headers`，缺失的默认自有认证库／秘密会由启动器初始化。它仍向目标端口监听者发送 `SIGTERM`，且强制选择默认 `.local/auth/auth.sqlite3`，不是隔离临时库验证入口。本轮不运行／不修改它。下方旧“固定 `8080/5400`、缺安全参数、不支持认证”的描述仅为旧版本历史，不是当前源码事实。
+
+验证推荐分开启动：显式初始化此前不存在的自有临时库并持久保管侧车秘密，显式设置 `WEKNORA_AUTH_DB_PATH`，保留 `--no-proxy-headers`；前端同步设置空闲 `FRONTEND_PORT` 和 `BACKEND_PROXY_TARGET`。下方分端命令可作参考，但验证应换用自己的临时目录，库／秘密存在时绝不覆盖。只停止自己创建的进程，不读 `.env`、用户库或秘密内容，不调用真实／付费模型。
+
+技术依据为[技术方案](../../artifacts/weknora-knowledge-base-management/02-design/tech-design.md)与[执行计划](../../artifacts/weknora-knowledge-base-management/02-design/execution-plan.md)。学习指南正文由本轮协调者接收后机械落盘，本工作者未写入 `artifacts/weknora-knowledge-base-management/03-code/learning-guide.md`；接口说明由独立文档任务交付。唯一进度仍在[进度与验收记录](../../docs/从0到1重构WeKnora/13-进度与验收记录.md)。完成本业务必要审核、验证与讲解后暂停，不自动开启模型、上传、解析、检索、问答、共享、编辑或删除。
+
+**前端启动安全补充：** 当前 `vite.config.ts` 调用 `loadEnv(mode, process.cwd(), '')`，默认 `pnpm dev` 即使显式传端口也可能读取工程 `.env*`；设置进程变量不等于禁读文件。下方默认前端命令仅保留历史，不用于本轮禁读 `.env` 的验证。当前体验只使用协调者另行明确提供的自有演示地址；没有已提供地址时记录 `blocked/待提供`，不要猜测服务在线或运行默认前端配置。独立重现须先准备使用私有空目录 `envDir`、且不调用项目 `loadEnv` 的临时配置，由验证阶段提供具体入口，本文不创建或修改配置。
+
+## 历史：认证正式验证结论（`2026-11-22`）
 
 独立复审 **`PASSED`**，未解决 `P0/P1/P2` 均为 `0`；独立 `TASK-04 PASSED/completed`，后端新增 `92` 项、全套 `220 passed`，前端新增 `14` 项、全套 `41 passed`，真实浏览器 `29` 场景组通过，必需 `failed/blocked=0`。`CR-001–005`、注册事务、真实身份、轮换／退出竞态和重启恢复均有独立证据；`Ruff`、类型检查与构建通过，未发现生产缺陷。本文只同步正式报告，没有重跑测试。
 

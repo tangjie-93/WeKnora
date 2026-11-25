@@ -1,27 +1,22 @@
 <template>
-    <AuthLayout>
-        <el-card class="login-page" shadow="never">
-            <AppPageHeader eyebrow="WELCOME BACK" title="欢迎回来" description="登录 WeKnora，进入你的个人空间。" />
-            <el-alert v-if="registrationNotice" :title="registrationNotice.message" type="success" :closable="false" show-icon />
-            <el-alert v-if="session.pendingLogout" title="服务端退出待确认，请先重试退出。" type="warning" :closable="false" show-icon />
-            <el-alert v-if="session.storageError || formError" :title="session.storageError || formError" type="error" :closable="false" show-icon />
-            <el-form class="login-page__form" label-position="top" @submit.prevent="handleSubmit">
-                <el-form-item label="邮箱"><el-input v-model="email" type="email" autocomplete="email" placeholder="you@example.com" :disabled="isSubmitting || !!session.pendingLogout" /></el-form-item>
-                <el-form-item label="密码"><el-input v-model="password" :type="isPasswordVisible ? 'text' : 'password'" autocomplete="current-password" show-password :disabled="isSubmitting || !!session.pendingLogout" /></el-form-item>
-                <el-button native-type="submit" type="primary" :loading="isSubmitting" :disabled="!!session.pendingLogout">登录</el-button>
-                <el-button v-if="session.pendingLogout" :loading="isLoggingOut" @click="retryPendingLogout">重试退出</el-button>
-            </el-form>
-            <el-divider />
-            <el-text size="small">还没有账户？ <RouterLink to="/register">创建账户</RouterLink></el-text>
-        </el-card>
-    </AuthLayout>
+    <AuthFormCard title="欢迎回来" description="登录 WeKnora，进入你的个人空间。">
+        <el-alert v-if="registrationNotice" :title="registrationNotice.message" type="success" :closable="false" show-icon />
+        <el-alert v-if="session.pendingLogout" title="服务端退出待确认，请先重试退出。" type="warning" :closable="false" show-icon />
+        <el-alert v-if="session.storageError || formError" :title="session.storageError || formError" type="error" :closable="false" show-icon />
+        <el-form label-position="top" @submit.prevent="handleSubmit">
+            <el-form-item label="邮箱"><el-input v-model="email" type="email" autocomplete="email" placeholder="you@example.com" :disabled="isSubmitting || !!session.pendingLogout" /></el-form-item>
+            <el-form-item label="密码"><el-input v-model="password" :type="isPasswordVisible ? 'text' : 'password'" autocomplete="current-password" show-password :disabled="isSubmitting || !!session.pendingLogout" /></el-form-item>
+            <el-button native-type="submit" type="primary" :loading="isSubmitting" :disabled="!!session.pendingLogout">登录</el-button>
+            <el-button v-if="session.pendingLogout" :loading="isLoggingOut" @click="retryPendingLogout">重试退出</el-button>
+        </el-form>
+        <template #footer>还没有账户？ <RouterLink to="/register">创建账户</RouterLink></template>
+    </AuthFormCard>
 </template>
 
 <script setup lang="ts">
 import { onUnmounted, ref } from 'vue';
 import { RouterLink } from 'vue-router';
-import AuthLayout from '../../components/layout/AuthLayout.vue';
-import AppPageHeader from '../../components/layout/AppPageHeader.vue';
+import AuthFormCard from '../../components/layout/AuthFormCard.vue';
 import { ApiError, errorMessage } from '../../api/client';
 import { useSession } from '../../hooks/useSession';
 import { useSessionStore } from '../../stores/session';
@@ -56,14 +51,3 @@ async function handleSubmit(): Promise<void> {
 
 onUnmounted(() => { controller.abort(); password.value = ''; });
 </script>
-
-<style scoped lang="less">
-.login-page {
-    width: min(100%, 420px);
-
-    & :deep(.el-card__body) { padding: 18px; }
-    & :deep(.el-alert) { margin-bottom: 10px; }
-    &__form { margin-top: 14px; }
-    & :deep(.el-button + .el-button) { margin-left: 8px; }
-}
-</style>

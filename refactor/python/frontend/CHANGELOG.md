@@ -1,14 +1,32 @@
 ---
-task_id: WEKNORA-PRODUCT-AUTH-20261122
+task_id: WEKNORA-KNOWLEDGE-BASE-MANAGEMENT-20261124
 stage: TASK-03
 author: 开发工程师
-date: 2026-11-22
+date: 2026-11-24
 run_mode: auto
 ---
 
 # `Vue` 前端变更记录
 
-## 最终正式验证：`2026-11-22`
+## `Unreleased` — `2026-11-25`：同步本轮独立验证
+
+- 独立复审 `PASSED/P0=0/P1=0/P2=0`；首轮 `FAILED/P1=3` 及 `CR-001–003` 修复历史保留，见[复审第九节](../../artifacts/weknora-knowledge-base-management/03-code/code-review-report.md#9-第一次定向复审与当前结论2026-11-25)。
+- 独立 `TASK-04` 测试执行 `passed/completed`：前端新增 `42`／全量 `83=41+42`，后端新增 `186`／全量 `406=220+186`；浏览器业务 `11` 加旧导航 `5` 共 `16` 组，和测试数分列。创建、重载／重启、错误恢复、隔离、桌面／移动／键盘已验证，`Ruff`、类型、私有空 `envDir` 安全等价构建及 `9` 份迁移资产逐字节核验通过，无关键测试阻塞。见[测试报告](../../artifacts/weknora-knowledge-base-management/04-e2e/test-report.md)、[用例清单](../../artifacts/weknora-knowledge-base-management/04-e2e/added-cases.md)；两份文件已提供，旧未落盘语是历史，本文不重跑。
+- **主线程最新通知：`TASK-04 leader` 独立质量门禁 `PASSED`（`9` 项硬门禁、`3` 项软门禁），旧待审核仅历史；不据此宣称知识沉淀或整个工作流完成。** 下方待核对／独立 `not-run` 为开发快照；旧认证 `220/41` 非当前全量，开发 `357/537` 只属开发断言。仍仅空库创建／列表、`100` 容量、空模型与不可用引擎，无模型、上传／问答、共享、编辑或删除。独立测试服务已停止、私有库／配置已清理，演示地址需协调者另行确认，不复用已删除配置或运行默认读 `.env*` 的前端配置。
+
+## 历史开发快照 — `2026-11-24`：真实空知识库产品切片
+
+- 新受保护入口 `/#/knowledge-bases` 沿用 `Element Plus/ProductLayout`，增加空／加载／失败／真实列表和仅名称／描述创建弹窗；保留账户、健康、进度、兼容路由以及根／登录后进入账户的行为。补最小窄屏菜单与键盘／焦点操作，不回退旧布局；组合源码与真实体验待协调者／独立阶段验证。
+- 适配 `POST /api/v1/knowledge-bases` 的 `201/success/data` 与 `GET` 的 `200/success/data[]`、空数组 `[]`、`no-store`；仅当前真实空间可启用。查询键含 `epoch/userID/tenantID/creator`，会话切换清理知识库与认证而不清健康；迟到成功／错误／`finally` 不改变新用户缓存、草稿或提交锁。提交不自动重试，成功后取消旧查询再重查；结果未确认先核对列表，重查失败不谎报创建失败。
+- 后端严格白名单 `name/description/type/embedding_model_id/summary_model_id`，名称去规定首尾空白后非空、最多 `255` 字符，描述原样最多 `4000`；仅文档类型、空模型，未知／重复字段、非法正文／参数明确拒绝，正文限 `1 MiB`。列表仅单个 `creator`，无分页／共享；最多 `100` 条，创建到上限 `400/1000`、列表 `LIMIT 101` 超界 `503/1008`，不截断。
+- 空模型真实持久化，引擎 `unavailable/unavailable`，`capabilities` 不是就绪承诺；存储只核对非秘密默认／实例／别名及允许集合，固定 `local/minio/cos/tos/s3/oss/ks3/obs` 回退，无可用租户默认提供方时 `s3,local` 仍选 `local`，失效具体默认不跳过。创建提交后尽力写 `kb.created`，不创建模型、桶、目录、集合或任务，不改迁移／清单字节或读取不存在的画像列。
+- 损坏已存配置／租户默认存储配置的 `JSON`、结构、字段类型为 `500/1007`；合法但超子集为 `503/1008`。两接口合法 `Bearer` 形式中令牌部分 `UTF-8` 超过 `4096` 字节保持 `400/1010 Authentication token is too long` 且不回显。无效身份／越权不伪装空态，不复用用户名重复或密码规则错误提示。
+- 启动器当前默认 `18080/15400`，环境覆盖 `BACKEND_PORT/FRONTEND_PORT/BACKEND_PROXY_TARGET`，已带 `--no-proxy-headers` 并初始化缺失默认库，但仍会 `SIGTERM` 监听者；旧端口／缺安全参数描述仅历史。本轮不运行；验证分端使用自有临时库与空闲端口，不读 `.env`／用户库／秘密，不调用付费模型。
+- 本文开发运行自检、独立审查、`TASK-04` 接口／浏览器 `not-run/待验证`，无新通过计数。仅空库创建／列表，不是完整 `CRUD/S5`，详情、编辑、删除、共享、置顶写入、模型平台、上传、解析、检索、问答均未交付。学习指南正文交协调者待写，本文作者未落盘；详见[当前说明](./README.md)与[唯一进度](../../docs/从0到1重构WeKnora/13-进度与验收记录.md)，必要交付与讲解后暂停等明确继续。
+
+**前端启动安全补充：** 项目 `vite.config.ts` 的 `loadEnv()` 会读取工程 `.env*`，传端口变量不能禁读；本轮不得用默认 `pnpm dev` 作为禁读环境的验证入口。体验只采用协调者明确提供的自有演示地址，未提供则 `blocked/待提供`，不猜测在线；独立重现需由验证阶段提供私有空目录 `envDir`、不调用项目 `loadEnv` 的临时配置。下方默认命令仅历史，本文不创建或修改配置。
+
+## 历史最终正式验证：`2026-11-22`
 
 - 独立复审 `PASSED/P0=0/P1=0/P2=0`；独立 `TASK-04 PASSED/completed`，新增前端 `14`／全套 `41 passed`，浏览器 `29` 场景组；后端新增 `92`／全套 `220 passed`，必需失败／阻塞为 `0`，静态／类型／构建通过，无生产缺陷。
 - 真实账户旅程、首次 `me` 失败恢复／`403` 退出、`CR-001–005`、响应式／键盘、单次刷新、迟到响应／用户隔离、待撤销重载重试与后端重启已独立回归。[正式测试](../../artifacts/weknora-product-auth/04-e2e/test-report.md)、[新增用例](../../artifacts/weknora-product-auth/04-e2e/added-cases.md)保留两处测试自身问题与修正、上游警告；[复审](../../artifacts/weknora-product-auth/03-code/code-review-report.md)保留首轮失败。

@@ -1,27 +1,22 @@
 <template>
-    <AuthLayout>
-        <el-card class="register-page" shadow="never">
-            <AppPageHeader eyebrow="GET STARTED" title="创建你的账户" description="注册将创建账户、个人空间和所有者成员关系。" />
-            <el-alert v-if="session.pendingLogout" title="请先完成待确认的服务端退出。" type="warning" :closable="false" show-icon />
-            <el-alert v-if="formError" :title="formError" type="error" :closable="false" show-icon />
-            <el-form class="register-page__form" label-position="top" @submit.prevent="handleSubmit">
-                <el-form-item label="用户名" :error="fieldErrors.username"><el-input v-model="username" autocomplete="username" maxlength="50" :disabled="isSubmitting || !!session.pendingLogout" /></el-form-item>
-                <el-form-item label="邮箱" :error="fieldErrors.email"><el-input v-model="email" type="email" autocomplete="email" maxlength="255" placeholder="you@example.com" :disabled="isSubmitting || !!session.pendingLogout" /></el-form-item>
-                <el-form-item label="密码" :error="fieldErrors.password"><el-input v-model="password" type="password" autocomplete="new-password" show-password :disabled="isSubmitting || !!session.pendingLogout" /><div class="register-page__hint">8–32 个字符，至少含一个英文字母和数字。</div></el-form-item>
-                <el-form-item label="确认密码" :error="fieldErrors.confirmation"><el-input v-model="confirmation" type="password" autocomplete="new-password" show-password :disabled="isSubmitting || !!session.pendingLogout" /></el-form-item>
-                <el-button native-type="submit" type="primary" :loading="isSubmitting" :disabled="!!session.pendingLogout">创建账户</el-button>
-            </el-form>
-            <el-divider />
-            <el-text size="small">已有账户？ <RouterLink to="/login">返回登录</RouterLink></el-text>
-        </el-card>
-    </AuthLayout>
+    <AuthFormCard title="创建你的账户" description="注册将创建账户、个人空间和所有者成员关系。">
+        <el-alert v-if="session.pendingLogout" title="请先完成待确认的服务端退出。" type="warning" :closable="false" show-icon />
+        <el-alert v-if="formError" :title="formError" type="error" :closable="false" show-icon />
+        <el-form label-position="top" @submit.prevent="handleSubmit">
+            <el-form-item label="用户名" :error="fieldErrors.username"><el-input v-model="username" autocomplete="username" maxlength="50" :disabled="isSubmitting || !!session.pendingLogout" /></el-form-item>
+            <el-form-item label="邮箱" :error="fieldErrors.email"><el-input v-model="email" type="email" autocomplete="email" maxlength="255" placeholder="you@example.com" :disabled="isSubmitting || !!session.pendingLogout" /></el-form-item>
+            <el-form-item label="密码" :error="fieldErrors.password"><el-input v-model="password" type="password" autocomplete="new-password" show-password :disabled="isSubmitting || !!session.pendingLogout" /><div class="register-page__hint">8–32 个字符，至少含一个英文字母和数字。</div></el-form-item>
+            <el-form-item label="确认密码" :error="fieldErrors.confirmation"><el-input v-model="confirmation" type="password" autocomplete="new-password" show-password :disabled="isSubmitting || !!session.pendingLogout" /></el-form-item>
+            <el-button native-type="submit" type="primary" :loading="isSubmitting" :disabled="!!session.pendingLogout">创建账户</el-button>
+        </el-form>
+        <template #footer>已有账户？ <RouterLink to="/login">返回登录</RouterLink></template>
+    </AuthFormCard>
 </template>
 
 <script setup lang="ts">
 import { onUnmounted, reactive, ref } from 'vue';
 import { RouterLink, useRouter } from 'vue-router';
-import AuthLayout from '../../components/layout/AuthLayout.vue';
-import AppPageHeader from '../../components/layout/AppPageHeader.vue';
+import AuthFormCard from '../../components/layout/AuthFormCard.vue';
 import { registerAccount } from '../../api/auth';
 import { ApiError, errorMessage } from '../../api/client';
 import { registrationNotice } from '../../hooks/useSession';
@@ -72,12 +67,10 @@ onUnmounted(() => { controller.abort(); password.value = ''; confirmation.value 
 </script>
 
 <style scoped lang="less">
-.register-page {
-    width: min(100%, 460px);
-
-    & :deep(.el-card__body) { padding: 18px; }
-    & :deep(.el-alert) { margin-bottom: 10px; }
-    &__form { margin-top: 14px; }
-    &__hint { margin-top: 4px; color: var(--el-text-color-secondary); font-size: 12px; line-height: 1.4; }
+.register-page__hint {
+    margin-top: 4px;
+    color: var(--el-text-color-secondary);
+    font-size: 12px;
+    line-height: 1.4;
 }
 </style>

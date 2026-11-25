@@ -54,16 +54,23 @@ class AuthService:
 
     def current_identity(self, raw: str, tenant_id: int | None = None):
         self.require_available()
-        claims = decode_token(raw, self.secret, "access")
+        # Preserve token validation before opening the original auth operation's connection.
+        decode_token(raw, self.secret, "access")
         with connect_auth_database(self.settings) as connection:
             # Read token, user, tenant and member from one consistent snapshot.
             connection.execute("BEGIN")
-            repository.require_token_record(connection, raw, claims)
-            identity = repository.get_active_identity(connection, claims["user_id"])
-            if (claims["tenant_id"] != identity.tenant["id"] or
-                    (tenant_id is not None and tenant_id != identity.tenant["id"])):
-                raise AuthFailure(403, 1002, "Current workspace does not match authentication")
-            return identity
+            return self.current_identity_in_connection(connection, raw, tenant_id)
+
+    def current_identity_in_connection(self, connection, raw: str, tenant_id: int | None = None):
+        """Validate identity inside the caller's existing transaction without opening a connection."""
+        self.require_available()
+        claims = decode_token(raw, self.secret, "access")
+        repository.require_token_record(connection, raw, claims)
+        identity = repository.get_active_identity(connection, claims["user_id"])
+        if (claims["tenant_id"] != identity.tenant["id"] or
+                (tenant_id is not None and tenant_id != identity.tenant["id"])):
+            raise AuthFailure(403, 1002, "Current workspace does not match authentication")
+        return identity
 
     def refresh(self, raw: str):
         self.require_available()
